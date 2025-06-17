@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const placeNameInput = document.getElementById("placeNameInput");
   const placeIdInput = document.getElementById("placeIdInput");
   const usernameInput = document.getElementById("usernameInput");
   const taxonSelect = document.getElementById("taxonSelect");
@@ -7,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const loading = document.getElementById("loading");
   const observedCount = document.getElementById("observedCount");
   const totalCount = document.getElementById("totalCount");
+  const percentObserved = document.getElementById("percentObserved");
   const progressBar = document.getElementById("progressBar");
   const showMissingCheckbox = document.getElementById("showMissingOnly");
   const advancedOptionsButton = document.getElementById("advancedOptionsButton");
@@ -18,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
   const savedPlaceId = localStorage.getItem("inatPlaceId");
+  const savedPlaceName = localStorage.getItem("inatPlaceName");
   const savedTaxon = localStorage.getItem("inatTaxon");
   const savedLimit = localStorage.getItem("inatLimit");
 
@@ -27,6 +30,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (savedPlaceId) {
     placeIdInput.value = savedPlaceId;
+  }
+
+  if (savedPlaceName) {
+    placeNameInput.value = savedPlaceName;
   }
 
   if (savedTaxon) {
@@ -50,13 +57,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Save place ID when it changes
-  placeIdInput.addEventListener("change", () => {
-    const placeId = placeIdInput.value.trim();
-    if (placeId) {
-      localStorage.setItem("inatPlaceId", placeId);
-    } else {
+  // Save place name when it changes
+  placeNameInput.addEventListener("change", () => {
+    const placeName = placeNameInput.value.trim();
+
+    if (placeName == "") {
+      localStorage.removeItem("inatPlaceName");
       localStorage.removeItem("inatPlaceId");
+      placeIdInput.value = "";
+      placeNameInput.value = "";
+      savedPlaceName = "";
+      savedPlaceId = "";
     }
   });
 
@@ -125,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   searchButton.addEventListener("click", async () => {
-    const placeId = placeIdInput.value.trim();
+    placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
     let taxonId = taxonSelect.value;
     if (taxonIdOverrideInput && taxonIdOverrideInput.value.trim() !== "") {
@@ -133,9 +144,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     showMissingCheckbox.checked = false;
 
-    if (!placeId || !username) {
+    if (!username) {
       alert("Please enter both place ID and username");
       return;
+    }
+
+    if (!placeId) {
+      placeId = "any";
     }
 
     try {
@@ -203,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
     observedCount.textContent = observed;
     totalCount.textContent = total;
     const percent = total > 0 ? Math.round((observed / total) * 100) : 0;
+    percentObserved.textContent = percent;
     progressBar.style.width = `${percent}%`;
   }
 
@@ -230,9 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "https://via.placeholder.com/300x200?text=No+Image";
 
     // Create the iNaturalist URL for this species in the current place
-    const inatUrl = `https://www.inaturalist.org/observations?place_id=${
-      document.getElementById("placeIdInput").value
-    }&taxon_id=${specimen.taxon.id}`;
+    const inatUrl = `https://www.inaturalist.org/observations?place_id=${placeIdInput.value}&taxon_id=${specimen.taxon.id}`;
 
     card.innerHTML = `
       <a href="${inatUrl}" target="_blank" class="species-link">
@@ -260,4 +274,101 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
+
+  // Place search functionality
+  const placeInput = document.getElementById("placeNameInput");
+  const placeAutocomplete = document.getElementById("placeAutocomplete");
+  let placeSearchTimeout;
+
+  placeInput.addEventListener("input", (e) => {
+    const query = e.target.value.trim();
+
+    // Clear previous timeout
+    if (placeSearchTimeout) {
+      clearTimeout(placeSearchTimeout);
+    }
+
+    // Clear autocomplete if input is empty
+    if (!query) {
+      placeAutocomplete.innerHTML = "";
+      placeAutocomplete.classList.remove("active");
+      return;
+    }
+
+    // Set new timeout to prevent too many API calls
+    placeSearchTimeout = setTimeout(() => {
+      searchPlaces(query);
+    }, 300);
+  });
+
+  async function searchPlaces(query) {
+    try {
+      const response = await fetch(
+        `https://api.inaturalist.org/v1/places/autocomplete?q=${encodeURIComponent(
+          query
+        )}`
+      );
+      const data = await response.json();
+
+      if (data.results && data.results.length > 0) {
+        displayPlaceSuggestions(data.results);
+      } else {
+        placeAutocomplete.innerHTML =
+          '<div class="place-suggestion">No places found</div>';
+        placeAutocomplete.classList.add("active");
+      }
+    } catch (error) {
+      console.error("Error searching places:", error);
+      placeAutocomplete.innerHTML =
+        '<div class="place-suggestion">Error searching places</div>';
+      placeAutocomplete.classList.add("active");
+    }
+  }
+
+  function displayPlaceSuggestions(places) {
+    placeAutocomplete.innerHTML = places
+      .map(
+        (place) => `
+        <div class="place-suggestion" data-id="${place.id}">
+            <div class="place-name">${place.name}</div>
+            <div class="place-details">${
+              place.ancestor_place_names
+                ? place.ancestor_place_names.join(", ")
+                : ""
+            }</div>
+        </div>
+    `
+      )
+      .join("");
+
+    placeAutocomplete.classList.add("active");
+
+    // Add click handlers to suggestions
+    const suggestions = placeAutocomplete.querySelectorAll(".place-suggestion");
+    suggestions.forEach((suggestion) => {
+      suggestion.addEventListener("click", () => {
+        const placeId = suggestion.dataset.id;
+        const placeName = suggestion.querySelector(".place-name").textContent;
+
+        // Update input and save to localStorage
+        placeNameInput.value = placeName;
+        placeIdInput.value = placeId;
+        localStorage.setItem("inatPlaceId", placeId);
+        localStorage.setItem("inatPlaceName", placeName);
+
+        // Hide autocomplete
+        placeAutocomplete.classList.remove("active");
+      });
+    });
+  }
+
+  // Close autocomplete when clicking outside
+  document.addEventListener("click", (e) => {
+    if (
+      !placeInput.contains(e.target) &&
+      !placeAutocomplete.contains(e.target)
+    ) {
+      placeAutocomplete.classList.remove("active");
+    }
+  });
 });

@@ -35,7 +35,16 @@
             <option value="1">Animals</option>
             <option value="355675">Vertebrates</option>
           </select>
-          <input type="text" id="placeIdInput" placeholder="Enter place ID" />
+          <div class="place-search-container">
+            <input
+              type="text"
+              id="placeNameInput"
+              placeholder="Search for a place..."
+              autocomplete="off"
+            />
+            <div id="placeAutocomplete" class="place-autocomplete"></div>
+          </div>
+          <input type="text" id="placeIdInput" style="display: none" />
           <select id="limitSelect" class="limit-select">
             <option value="100">Top 100 Species</option>
             <option value="200">Top 200 Species</option>
@@ -59,7 +68,9 @@
         <div class="status-bar" id="statusBar">
           <div class="status-text">
             Observed: <span id="observedCount">0</span> /
-            <span id="totalCount">0</span> species
+            <span id="totalCount">0</span> species (<span id="percentObserved"
+              >0</span
+            >%)
           </div>
           <div class="progress-bar">
             <div class="progress" id="progressBar"></div>
