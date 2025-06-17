@@ -15,12 +15,14 @@
       <header>
         <h1>SpeciesDex</h1>
         <p class="description">
-          Discover how many of the top most observed species in a place you've
+          Discover how many of the most observed species in a place you've
           already spotted - iNaturalist.
         </p>
         <div class="search-container">
           <select id="taxonSelect" class="taxon-select">
             <option value="all" selected>All Species</option>
+            <option value="1">Animals</option>
+            <option value="355675">Vertebrates</option>
             <option value="3">Birds</option>
             <option value="40151">Mammals</option>
             <option value="26036">Reptiles</option>
@@ -45,12 +47,39 @@
             placeholder="Enter iNaturalist username"
           />
           <button id="searchButton">Search</button>
+          <button id="advancedOptionsButton" type="button">
+            Advanced Options
+          </button>
+        </div>
+        <div
+          id="advancedOptionsSection"
+          class="advanced-options-section"
+          style="display: none"
+        >
+          <input
+            id="taxonIdOverrideInput"
+            class="taxon-id-override-input"
+            placeholder="Taxon ID"
+          />
+          <input type="checkbox" id="wildCheckbox" class="wild-checkbox" />
+          <label for="wildCheckbox">Wild Only</label>
+          <input
+            type="checkbox"
+            id="includeAllPlacesCheckbox"
+            class="include-all-places-checkbox"
+          />
+          <label for="includeAllPlacesCheckbox"
+            >Include my observations from all places</label
+          >
         </div>
         <div class="status-bar" id="statusBar">
           <div class="status-text">
             Observed: <span id="observedCount">0</span> /
-            <span id="totalCount">0</span> species
+            <span id="totalCount">0</span> species (<span id="percentObserved"
+              >0</span
+            >%)
           </div>
+
           <div class="progress-bar">
             <div class="progress" id="progressBar"></div>
           </div>
