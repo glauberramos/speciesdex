@@ -324,41 +324,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function searchPlaces(query) {
     await fetch(
-      `https://api.inaturalist.org/v1/search?callback=placeAutocompleteCallback&q=${encodeURIComponent(
+      `https://api.inaturalist.org/v1/search?q=${encodeURIComponent(
         query
       )}&sources=places&per_page=10`
-    ).then((response) => {
-      const reader = response.body.getReader();
-      console.log(reader);
-    });
-
-    //   const data = await response.json();
-    //   console.log(response());
-
-    //   if (data.results && data.results.length > 0) {
-    //     displayPlaceSuggestions(data.results);
-    //   } else {
-    //     placeAutocomplete.innerHTML =
-    //       '<div class="place-suggestion">No places found</div>';
-    //     placeAutocomplete.classList.add("active");
-    //   }
-    // } catch (error) {
-    //   console.error("Error searching places:", error);
-    //   placeAutocomplete.innerHTML =
-    //     '<div class="place-suggestion">Error searching places</div>';
-    //   placeAutocomplete.classList.add("active");
-    // }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result.results && result.results.length > 0) {
+          displayPlaceSuggestions(result.results);
+        } else {
+          placeAutocomplete.innerHTML =
+            '<div class="place-suggestion">No places found</div>';
+        }
+      });
   }
 
   function displayPlaceSuggestions(places) {
     placeAutocomplete.innerHTML = places
       .map(
         (place) => `
-        <div class="place-suggestion" data-id="${place.id}">
-            <div class="place-name">${place.name}</div>
+        <div class="place-suggestion" data-id="${place.record.id}">
+            <div class="place-name">${place.record.name}</div>
             <div class="place-details">${
-              place.ancestor_place_names
-                ? place.ancestor_place_names.join(", ")
+              place.record.ancestor_place_names
+                ? place.record.ancestor_place_names.join(", ")
                 : ""
             }</div>
         </div>
