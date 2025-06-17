@@ -34,10 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const savedTaxon = localStorage.getItem("inatTaxon");
   const savedLimit = localStorage.getItem("inatLimit");
 
-  if (savedUsername) {
-    usernameInput.value = savedUsername;
-  }
-
   if (savedPlaceId) {
     placeIdInput.value = savedPlaceId;
   }
@@ -55,6 +51,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (limitSelect) {
       limitSelect.value = savedLimit;
     }
+  }
+
+  if (savedUsername) {
+    usernameInput.value = savedUsername;
+    searchEspecies();
   }
 
   // Save username when it changes
@@ -132,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  searchButton.addEventListener("click", async () => {
+  async function searchEspecies() {
     placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
     let taxonId = taxonSelect.value;
@@ -173,6 +174,10 @@ document.addEventListener("DOMContentLoaded", function () {
     } finally {
       loading.style.display = "none";
     }
+  }
+
+  searchButton.addEventListener("click", async () => {
+    searchEspecies();
   });
 
   async function getUserObservations(username, placeId, taxonId) {
