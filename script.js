@@ -55,9 +55,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Save place name when it changes
   placeNameInput.addEventListener("change", () => {
     const placeName = placeNameInput.value.trim();
-    if (!placeName) {
+
+    if (placeName == "") {
       localStorage.removeItem("inatPlaceName");
       localStorage.removeItem("inatPlaceId");
+      placeIdInput.value = "";
+      placeNameInput.value = "";
+      savedPlaceName = "";
+      savedPlaceId = "";
     }
   });
 
