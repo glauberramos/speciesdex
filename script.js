@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const taxonIdOverrideInput = document.getElementById("taxonIdOverrideInput");
   const wildCheckbox = document.getElementById("wildCheckbox");
   const includeAllPlacesCheckbox = document.getElementById("includeAllPlacesCheckbox");
+  const researchGradeCheckbox = document.getElementById("researchGradeCheckbox");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -137,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   searchButton.addEventListener("click", async () => {
     placeId = placeIdInput.value.trim();
+    console.log("Place ID: " + placeId)
     const username = usernameInput.value.trim();
     let taxonId = taxonSelect.value;
     if (taxonIdOverrideInput && taxonIdOverrideInput.value.trim() !== "") {
@@ -184,6 +186,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (wildCheckbox && wildCheckbox.checked) {
       url = url.replace('?', '?captive=false&');
     }
+    if (researchGradeCheckbox && researchGradeCheckbox.checked) {
+      url += `&quality_grade=research`;
+    }
     const response = await fetch(url);
     const data = await response.json();
 
@@ -193,6 +198,9 @@ document.addEventListener("DOMContentLoaded", function () {
       let allPlacesUrl = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${taxonParam}`;
       if (wildCheckbox && wildCheckbox.checked) {
         allPlacesUrl = allPlacesUrl.replace('?', '?captive=false&');
+      }
+      if (researchGradeCheckbox && researchGradeCheckbox.checked) {
+        allPlacesUrl += `&quality_grade=research`;
       }
       const allPlacesResponse = await fetch(allPlacesUrl);
       const allPlacesData = await allPlacesResponse.json();
@@ -208,6 +216,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}`;
     if (wildCheckbox && wildCheckbox.checked) {
       url = url.replace('?', '?captive=false&');
+    }
+    if (researchGradeCheckbox && researchGradeCheckbox.checked) {
+      url += `&quality_grade=research`;
     }
     const response = await fetch(url);
     const data = await response.json();
@@ -226,11 +237,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let observed = 0;
     const total = species.length;
 
-    species.forEach((specimen) => {
+    species.forEach((specimen, index) => {
       const isObserved = userObservations.has(specimen.taxon.id);
       if (isObserved) observed++;
 
-      const card = createSpeciesCard(specimen, isObserved);
+      const card = createSpeciesCard(specimen, isObserved, index);
       speciesGrid.appendChild(card);
     });
 
@@ -238,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".checkbox-container").style.display = "inline-flex";
   }
 
-  function createSpeciesCard(specimen, isObserved) {
+  function createSpeciesCard(specimen, isObserved, index) {
     const card = document.createElement("div");
     card.className = `species-card ${isObserved ? "observed" : ""}`;
     const imageUrl =
@@ -253,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <img src="${imageUrl}" alt="${specimen.taxon.name}">
         <h3>${specimen.taxon.preferred_common_name || specimen.taxon.name}</h3>
         <p class="scientific-name">${specimen.taxon.name}</p>
-        <p class="observations">Observations: ${specimen.count}</p>
+        <p class="observations">Observations: ${specimen.count} (#${index + 1})</p>
       </a>
     `;
     return card;

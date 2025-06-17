@@ -35,7 +35,7 @@
             <option value="1">Animals</option>
             <option value="355675">Vertebrates</option>
           </select>
-          <div class="place-search-container">
+          <div class="place-search-container" style="display: none">
             <input
               type="text"
               id="placeNameInput"
@@ -44,7 +44,7 @@
             />
             <div id="placeAutocomplete" class="place-autocomplete"></div>
           </div>
-          <input type="text" id="placeIdInput" style="display: none" />
+          <input type="text" id="placeIdInput" placeholder="Place ID"/>
           <select id="limitSelect" class="limit-select">
             <option value="100">Top 100 Species</option>
             <option value="200">Top 200 Species</option>
@@ -63,7 +63,9 @@
           <input type="checkbox" id="wildCheckbox" class="wild-checkbox" />
           <label for="wildCheckbox">Wild Only</label>
           <input type="checkbox" id="includeAllPlacesCheckbox" class="include-all-places-checkbox" />
-          <label for="includeAllPlacesCheckbox">Include Observations From All Places</label>
+          <label for="includeAllPlacesCheckbox">Include My Observations From All Places</label>
+          <input type="checkbox" id="researchGradeCheckbox" class="research-grade-checkbox" />
+          <label for="researchGradeCheckbox">Research Grade Only</label>
         </div>
         <div class="status-bar" id="statusBar">
           <div class="status-text">

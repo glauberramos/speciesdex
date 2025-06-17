@@ -281,7 +281,8 @@ button:hover {
 }
 
 .advanced-options-section .wild-checkbox,
-.advanced-options-section .include-all-places-checkbox {
+.advanced-options-section .include-all-places-checkbox,
+.advanced-options-section .research-grade-checkbox {
   margin-left: 24px;
 }
 
@@ -290,7 +291,8 @@ button:hover {
 }
 
 .wild-checkbox,
-.include-all-places-checkbox {
+.include-all-places-checkbox,
+.research-grade-checkbox {
   accent-color: #27ae60;
   width: 18px;
   height: 18px;
