@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const wildCheckbox = document.getElementById("wildCheckbox");
   const includeAllPlacesCheckbox = document.getElementById("includeAllPlacesCheckbox");
   const researchGradeCheckbox = document.getElementById("researchGradeCheckbox");
+  const monthDropdownButton = document.getElementById("monthDropdownButton");
+  const monthCheckboxes = document.getElementById("monthCheckboxes");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -136,6 +138,46 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  if (monthDropdownButton && monthCheckboxes) {
+    monthDropdownButton.addEventListener("click", function () {
+      if (monthCheckboxes.style.display === "none") {
+        monthCheckboxes.style.display = "flex";
+      } else {
+        monthCheckboxes.style.display = "none";
+      }
+    });
+  }
+
+  // Close the month dropdown if clicked outside
+  document.addEventListener("click", (e) => {
+    if (monthDropdownButton && monthCheckboxes) {
+      if (!monthDropdownButton.contains(e.target) && !monthCheckboxes.contains(e.target)) {
+        monthCheckboxes.style.display = "none";
+      }
+    }
+  });
+
+  // Save month selections to localStorage
+  if (monthCheckboxes) {
+    monthCheckboxes.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const selectedMonths = Array.from(monthCheckboxes.querySelectorAll('input[type="checkbox"]:checked'))
+          .map(cb => cb.value);
+        localStorage.setItem('inatMonths', JSON.stringify(selectedMonths));
+      });
+    });
+  }
+
+  // Load saved month selections
+  const savedMonths = JSON.parse(localStorage.getItem('inatMonths'));
+  if (savedMonths && monthCheckboxes) {
+    monthCheckboxes.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      if (savedMonths.includes(checkbox.value)) {
+        checkbox.checked = true;
+      }
+    });
+  }
+
   searchButton.addEventListener("click", async () => {
     placeId = placeIdInput.value.trim();
     console.log("Place ID: " + placeId)
@@ -182,6 +224,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getUserObservations(username, placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
+    let monthParam = '';
+    if (monthCheckboxes) {
+      const selectedMonths = Array.from(monthCheckboxes.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      if (selectedMonths.length > 0) {
+        monthParam = `&month=${selectedMonths.join(',')}`;
+      }
+    }
     let url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}&place_id=${placeId}${taxonParam}`;
     if (wildCheckbox && wildCheckbox.checked) {
       url = url.replace('?', '?captive=false&');
@@ -213,7 +263,15 @@ document.addEventListener("DOMContentLoaded", function () {
   async function getTopSpecies(placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
     const limit = document.getElementById("limitSelect").value;
-    let url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}`;
+    let monthParam = '';
+    if (monthCheckboxes) {
+      const selectedMonths = Array.from(monthCheckboxes.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      if (selectedMonths.length > 0) {
+        monthParam = `&month=${selectedMonths.join(',')}`;
+      }
+    }
+    let url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${monthParam}`;
     if (wildCheckbox && wildCheckbox.checked) {
       url = url.replace('?', '?captive=false&');
     }
