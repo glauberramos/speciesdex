@@ -173,20 +173,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getUserObservations(username, placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
-    let url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}&place_id=${placeId}${taxonParam}`;
-    if (wildCheckbox && wildCheckbox.checked) {
-      url = url.replace("?", "?captive=false&");
-    }
+    const captiveParam =
+      wildCheckbox && wildCheckbox.checked ? "&captive=false" : "";
+
+    const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}&place_id=${placeId}${taxonParam}${captiveParam}`;
     const response = await fetch(url);
     const data = await response.json();
 
     let allObservationIds = new Set(data.results.map((obs) => obs.id));
 
     if (includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked) {
-      let allPlacesUrl = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${taxonParam}`;
-      if (wildCheckbox && wildCheckbox.checked) {
-        allPlacesUrl = allPlacesUrl.replace("?", "?captive=false&");
-      }
+      const allPlacesUrl = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${taxonParam}${captiveParam}`;
       const allPlacesResponse = await fetch(allPlacesUrl);
       const allPlacesData = await allPlacesResponse.json();
       allPlacesData.results.forEach((obs) => allObservationIds.add(obs.id));
@@ -197,13 +194,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getTopSpecies(placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
+    const captiveParam =
+      wildCheckbox && wildCheckbox.checked ? "&captive=false" : "";
     const limit = document.getElementById("limitSelect").value;
-    let url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}`;
-    if (wildCheckbox && wildCheckbox.checked) {
-      url = url.replace("?", "?captive=false&");
-    }
+
+    const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}`;
     const response = await fetch(url);
     const data = await response.json();
+
     return data.results;
   }
 
