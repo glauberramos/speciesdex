@@ -15,8 +15,8 @@
       <header>
         <h1>SpeciesDex</h1>
         <p class="description">
-          Discover how many of the top 100 most observed species in a place
-          you've already spotted - iNaturalist.
+          Discover how many of the top most observed species in a place you've
+          already spotted - iNaturalist.
         </p>
         <div class="search-container">
           <select id="taxonSelect" class="taxon-select">
@@ -33,6 +33,11 @@
             <option value="47170">Fungi</option>
           </select>
           <input type="text" id="placeIdInput" placeholder="Enter place ID" />
+          <select id="limitSelect" class="limit-select">
+            <option value="100">Top 100 Species</option>
+            <option value="200">Top 200 Species</option>
+            <option value="500">Top 500 Species</option>
+          </select>
           <input
             type="text"
             id="usernameInput"

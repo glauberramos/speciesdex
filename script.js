@@ -9,10 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalCount = document.getElementById("totalCount");
   const progressBar = document.getElementById("progressBar");
 
-  // Load saved username, place ID, and taxon from localStorage
+  // Load saved username, place ID, taxon, and limit from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
   const savedPlaceId = localStorage.getItem("inatPlaceId");
   const savedTaxon = localStorage.getItem("inatTaxon");
+  const savedLimit = localStorage.getItem("inatLimit");
 
   if (savedUsername) {
     usernameInput.value = savedUsername;
@@ -24,6 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (savedTaxon) {
     taxonSelect.value = savedTaxon;
+  }
+
+  if (savedLimit) {
+    const limitSelect = document.getElementById("limitSelect");
+    if (limitSelect) {
+      limitSelect.value = savedLimit;
+    }
   }
 
   // Save username when it changes
@@ -56,6 +64,23 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.setItem("inatTaxon", taxonSelect.value);
   });
 
+  // Add event listener for taxon selection
+  if (taxonSelect) {
+    taxonSelect.addEventListener("change", function () {
+      const speciesGrid = document.getElementById("speciesGrid");
+      speciesGrid.className = "species-grid";
+    });
+  }
+
+  // Add event listener for limit selection
+  const limitSelect = document.getElementById("limitSelect");
+  if (limitSelect) {
+    limitSelect.addEventListener("change", function () {
+      // Save the selected limit to localStorage
+      localStorage.setItem("inatLimit", this.value);
+    });
+  }
+
   searchButton.addEventListener("click", async () => {
     const placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
@@ -78,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
         taxonId
       );
 
-      // Then get the top 100 species for the place
+      // Then get the top species for the place
       const topSpecies = await getTopSpecies(placeId, taxonId);
 
       // Display the species
@@ -105,8 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getTopSpecies(placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
+    const limit = document.getElementById("limitSelect").value;
     const response = await fetch(
-      `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=100${taxonParam}`
+      `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}`
     );
     const data = await response.json();
     return data.results;
@@ -155,13 +181,5 @@ document.addEventListener("DOMContentLoaded", function () {
       </a>
     `;
     return card;
-  }
-
-  // Add event listener for taxon selection
-  if (taxonSelect) {
-    taxonSelect.addEventListener("change", function () {
-      const speciesGrid = document.getElementById("speciesGrid");
-      speciesGrid.className = "species-grid";
-    });
   }
 });

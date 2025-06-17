@@ -44,7 +44,8 @@ h1 {
   margin-bottom: 20px;
 }
 
-.taxon-select {
+.taxon-select,
+.limit-select {
   padding: 10px 15px;
   border: 2px solid #ddd;
   border-radius: 5px;
@@ -59,11 +60,13 @@ h1 {
   background-size: 1em;
 }
 
-.taxon-select:hover {
+.taxon-select:hover,
+.limit-select:hover {
   border-color: #3498db;
 }
 
-.taxon-select:focus {
+.taxon-select:focus,
+.limit-select:focus {
   outline: none;
   border-color: #3498db;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
