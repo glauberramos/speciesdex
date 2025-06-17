@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const includeAllPlacesCheckbox = document.getElementById(
     "includeAllPlacesCheckbox"
   );
+  const researchGradeCheckbox = document.getElementById(
+    "researchGradeCheckbox"
+  );
+  const threatenedCheckbox = document.getElementById("threatenedCheckbox");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -187,12 +191,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
     const captiveParam =
       wildCheckbox && wildCheckbox.checked ? "&captive=false" : "";
+    const researchGrade =
+      researchGradeCheckbox && researchGradeCheckbox.checked
+        ? "&quality_grade=research"
+        : "";
+    const threatened =
+      threatenedCheckbox && threatenedCheckbox.checked
+        ? "&threatened=true"
+        : "";
     const allPlacesParam =
       includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked
         ? ""
         : `&place_id=${placeId}`;
 
-    const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${allPlacesParam}${taxonParam}${captiveParam}`;
+    const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${allPlacesParam}${taxonParam}${captiveParam}${researchGrade}${threatened}`;
     const response = await fetch(url);
     const data = await response.json();
 
@@ -205,9 +217,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
     const captiveParam =
       wildCheckbox && wildCheckbox.checked ? "&captive=false" : "";
+    const researchGrade =
+      researchGradeCheckbox && researchGradeCheckbox.checked
+        ? "&quality_grade=research"
+        : "";
+    const threatened =
+      threatenedCheckbox && threatenedCheckbox.checked
+        ? "&threatened=true"
+        : "";
     const limit = document.getElementById("limitSelect").value;
 
-    const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}`;
+    const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}${researchGrade}${threatened}`;
     const response = await fetch(url);
     const data = await response.json();
 

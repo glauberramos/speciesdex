@@ -280,22 +280,17 @@ button:hover {
   background-color: #e1e4e8;
 }
 
-.advanced-options-section .wild-checkbox,
-.advanced-options-section .include-all-places-checkbox {
-  margin-left: 24px;
-}
-
 .advanced-options-section label {
   margin-left: 3px;
   position: relative;
   top: -2px;
 }
 
-.wild-checkbox,
-.include-all-places-checkbox {
+input[type="checkbox"] {
   accent-color: #27ae60;
   width: 18px;
   height: 18px;
+  margin-left: 24px;
 }
 
 .taxon-id-override-input {
@@ -326,12 +321,6 @@ button:hover {
   color: #333;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.show-missing-checkbox {
-  accent-color: #27ae60;
-  width: 18px;
-  height: 18px;
 }
 
 .checkbox-container {
