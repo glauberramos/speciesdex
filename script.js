@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     showMissingCheckbox.checked = false;
 
     if (!username) {
-      alert("Please enter both place ID and username");
+      alert("Please enter username");
       return;
     }
 
