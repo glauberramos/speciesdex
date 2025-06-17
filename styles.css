@@ -137,17 +137,7 @@ button:hover {
 }
 
 /* Grid styles for different taxons */
-.species-grid,
-.birds-grid,
-.mammals-grid,
-.reptiles-grid,
-.amphibians-grid,
-.fish-grid,
-.insects-grid,
-.arachnids-grid,
-.mollusks-grid,
-.plants-grid,
-.fungi-grid {
+.species-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
@@ -225,49 +215,19 @@ button:hover {
 }
 
 @media (max-width: 1200px) {
-  .species-grid,
-  .birds-grid,
-  .mammals-grid,
-  .reptiles-grid,
-  .amphibians-grid,
-  .fish-grid,
-  .insects-grid,
-  .arachnids-grid,
-  .mollusks-grid,
-  .plants-grid,
-  .fungi-grid {
+  .species-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 992px) {
-  .species-grid,
-  .birds-grid,
-  .mammals-grid,
-  .reptiles-grid,
-  .amphibians-grid,
-  .fish-grid,
-  .insects-grid,
-  .arachnids-grid,
-  .mollusks-grid,
-  .plants-grid,
-  .fungi-grid {
+  .species-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .species-grid,
-  .birds-grid,
-  .mammals-grid,
-  .reptiles-grid,
-  .amphibians-grid,
-  .fish-grid,
-  .insects-grid,
-  .arachnids-grid,
-  .mollusks-grid,
-  .plants-grid,
-  .fungi-grid {
+  .species-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -277,16 +237,7 @@ button:hover {
 }
 
 @media (max-width: 480px) {
-  .birds-grid,
-  .mammals-grid,
-  .reptiles-grid,
-  .amphibians-grid,
-  .fish-grid,
-  .insects-grid,
-  .arachnids-grid,
-  .mollusks-grid,
-  .plants-grid,
-  .fungi-grid {
+  .species-grid {
     grid-template-columns: 1fr;
   }
 

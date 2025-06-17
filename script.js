@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const usernameInput = document.getElementById("usernameInput");
   const taxonSelect = document.getElementById("taxonSelect");
   const searchButton = document.getElementById("searchButton");
-  const speciesGrid = document.getElementById("birdsGrid");
+  const speciesGrid = document.getElementById("speciesGrid");
   const loading = document.getElementById("loading");
   const observedCount = document.getElementById("observedCount");
   const totalCount = document.getElementById("totalCount");
@@ -17,14 +17,13 @@ document.addEventListener("DOMContentLoaded", function () {
   if (savedUsername) {
     usernameInput.value = savedUsername;
   }
+
   if (savedPlaceId) {
     placeIdInput.value = savedPlaceId;
   }
+
   if (savedTaxon) {
     taxonSelect.value = savedTaxon;
-    // Trigger the change event to update the grid class
-    const event = new Event("change");
-    taxonSelect.dispatchEvent(event);
   }
 
   // Save username when it changes
@@ -52,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const taxonName = taxonSelect.options[taxonSelect.selectedIndex].text
       .split(" ")[0]
       .toLowerCase();
-    speciesGrid.className = `${taxonName}-grid`;
+    speciesGrid.className = `species-grid`;
     // Save the selected taxon to localStorage
     localStorage.setItem("inatTaxon", taxonSelect.value);
   });
@@ -162,13 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (taxonSelect) {
     taxonSelect.addEventListener("change", function () {
       const speciesGrid = document.getElementById("speciesGrid");
-      if (speciesGrid) {
-        const selectedTaxon = this.options[this.selectedIndex].text
-          .toLowerCase()
-          .split(" ")[0];
-        speciesGrid.className =
-          selectedTaxon === "all" ? "species-grid" : `${selectedTaxon}-grid`;
-      }
+      speciesGrid.className = "species-grid";
     });
   }
 });
