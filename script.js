@@ -81,10 +81,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Update grid class name when taxon changes
   taxonSelect.addEventListener("change", () => {
-    const taxonName = taxonSelect.options[taxonSelect.selectedIndex].text
-      .split(" ")[0]
-      .toLowerCase();
-    speciesGrid.className = `species-grid`;
     // Save the selected taxon to localStorage
     localStorage.setItem("inatTaxon", taxonSelect.value);
 
@@ -97,14 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-
-  // Add event listener for taxon selection
-  if (taxonSelect) {
-    taxonSelect.addEventListener("change", function () {
-      const speciesGrid = document.getElementById("speciesGrid");
-      speciesGrid.className = "species-grid";
-    });
-  }
 
   // Add event listener for limit selection
   const limitSelect = document.getElementById("limitSelect");
