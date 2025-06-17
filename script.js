@@ -9,12 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalCount = document.getElementById("totalCount");
   const progressBar = document.getElementById("progressBar");
 
-  // Load saved username, place ID, taxon, limit, and show missing preference from localStorage
+  // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
   const savedPlaceId = localStorage.getItem("inatPlaceId");
   const savedTaxon = localStorage.getItem("inatTaxon");
   const savedLimit = localStorage.getItem("inatLimit");
-  const savedShowMissing = localStorage.getItem("inatShowMissing");
 
   if (savedUsername) {
     usernameInput.value = savedUsername;
@@ -32,13 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const limitSelect = document.getElementById("limitSelect");
     if (limitSelect) {
       limitSelect.value = savedLimit;
-    }
-  }
-
-  if (savedShowMissing) {
-    const showMissingCheckbox = document.getElementById("showMissingOnly");
-    if (showMissingCheckbox) {
-      showMissingCheckbox.checked = savedShowMissing === "true";
     }
   }
 
@@ -93,8 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const showMissingCheckbox = document.getElementById("showMissingOnly");
   if (showMissingCheckbox) {
     showMissingCheckbox.addEventListener("change", function () {
-      // Save the checkbox state to localStorage
-      localStorage.setItem("inatShowMissing", this.checked);
       // If we have data loaded, filter it
       const speciesGrid = document.getElementById("speciesGrid");
       if (speciesGrid.children.length > 0) {
@@ -107,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
     const taxonId = taxonSelect.value;
+    showMissingCheckbox.checked = false;
 
     if (!placeId || !username) {
       alert("Please enter both place ID and username");
