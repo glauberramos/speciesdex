@@ -32,6 +32,8 @@
             <option value="47115">Mollusks</option>
             <option value="47126">Plants</option>
             <option value="47170">Fungi</option>
+            <option value="1">Animals</option>
+            <option value="355675">Vertebrates</option>
           </select>
           <input type="text" id="placeIdInput" placeholder="Enter place ID" />
           <select id="limitSelect" class="limit-select">
@@ -45,6 +47,14 @@
             placeholder="Enter iNaturalist username"
           />
           <button id="searchButton">Search</button>
+          <button id="advancedOptionsButton" type="button">Advanced Options</button>
+        </div>
+        <div id="advancedOptionsSection" class="advanced-options-section" style="display: none;">
+          <input id="taxonIdOverrideInput" class="taxon-id-override-input" placeholder="Taxon ID"/>
+          <input type="checkbox" id="wildCheckbox" class="wild-checkbox" />
+          <label for="wildCheckbox">Wild Only</label>
+          <input type="checkbox" id="includeAllPlacesCheckbox" class="include-all-places-checkbox" />
+          <label for="includeAllPlacesCheckbox">Include Observations From All Places</label>
         </div>
         <div class="status-bar" id="statusBar">
           <div class="status-text">
