@@ -9,11 +9,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalCount = document.getElementById("totalCount");
   const progressBar = document.getElementById("progressBar");
 
-  // Load saved username, place ID, taxon, and limit from localStorage
+  // Load saved username, place ID, taxon, limit, and show missing preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
   const savedPlaceId = localStorage.getItem("inatPlaceId");
   const savedTaxon = localStorage.getItem("inatTaxon");
   const savedLimit = localStorage.getItem("inatLimit");
+  const savedShowMissing = localStorage.getItem("inatShowMissing");
 
   if (savedUsername) {
     usernameInput.value = savedUsername;
@@ -31,6 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const limitSelect = document.getElementById("limitSelect");
     if (limitSelect) {
       limitSelect.value = savedLimit;
+    }
+  }
+
+  if (savedShowMissing) {
+    const showMissingCheckbox = document.getElementById("showMissingOnly");
+    if (showMissingCheckbox) {
+      showMissingCheckbox.checked = savedShowMissing === "true";
     }
   }
 
@@ -78,6 +86,20 @@ document.addEventListener("DOMContentLoaded", function () {
     limitSelect.addEventListener("change", function () {
       // Save the selected limit to localStorage
       localStorage.setItem("inatLimit", this.value);
+    });
+  }
+
+  // Add event listener for show missing checkbox
+  const showMissingCheckbox = document.getElementById("showMissingOnly");
+  if (showMissingCheckbox) {
+    showMissingCheckbox.addEventListener("change", function () {
+      // Save the checkbox state to localStorage
+      localStorage.setItem("inatShowMissing", this.checked);
+      // If we have data loaded, filter it
+      const speciesGrid = document.getElementById("speciesGrid");
+      if (speciesGrid.children.length > 0) {
+        filterSpecies();
+      }
     });
   }
 
@@ -181,5 +203,21 @@ document.addEventListener("DOMContentLoaded", function () {
       </a>
     `;
     return card;
+  }
+
+  function filterSpecies() {
+    const showMissingOnly = document.getElementById("showMissingOnly").checked;
+    const speciesGrid = document.getElementById("speciesGrid");
+    const cards = speciesGrid.getElementsByClassName("species-card");
+
+    for (let card of cards) {
+      if (showMissingOnly) {
+        card.style.display = card.classList.contains("observed")
+          ? "none"
+          : "block";
+      } else {
+        card.style.display = "block";
+      }
+    }
   }
 });

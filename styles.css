@@ -255,3 +255,32 @@ button:hover {
     max-width: 300px;
   }
 }
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.checkbox-container:hover {
+  border-color: #3498db;
+}
+
+.show-missing-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-container label {
+  cursor: pointer;
+  user-select: none;
+  color: #2c3e50;
+  font-size: 1rem;
+}
