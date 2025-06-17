@@ -61,8 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.removeItem("inatPlaceId");
       placeIdInput.value = "";
       placeNameInput.value = "";
-      savedPlaceName = "";
-      savedPlaceId = "";
     }
   });
 
@@ -252,27 +250,31 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   async function searchPlaces(query) {
-    try {
-      const response = await fetch(
-        `https://api.inaturalist.org/v1/places/autocomplete?q=${encodeURIComponent(
-          query
-        )}`
-      );
-      const data = await response.json();
+    await fetch(
+      `https://api.inaturalist.org/v1/search?callback=placeAutocompleteCallback&q=${encodeURIComponent(
+        query
+      )}&sources=places&per_page=10`
+    ).then((response) => {
+      const reader = response.body.getReader();
+      console.log(reader);
+    });
 
-      if (data.results && data.results.length > 0) {
-        displayPlaceSuggestions(data.results);
-      } else {
-        placeAutocomplete.innerHTML =
-          '<div class="place-suggestion">No places found</div>';
-        placeAutocomplete.classList.add("active");
-      }
-    } catch (error) {
-      console.error("Error searching places:", error);
-      placeAutocomplete.innerHTML =
-        '<div class="place-suggestion">Error searching places</div>';
-      placeAutocomplete.classList.add("active");
-    }
+    //   const data = await response.json();
+    //   console.log(response());
+
+    //   if (data.results && data.results.length > 0) {
+    //     displayPlaceSuggestions(data.results);
+    //   } else {
+    //     placeAutocomplete.innerHTML =
+    //       '<div class="place-suggestion">No places found</div>';
+    //     placeAutocomplete.classList.add("active");
+    //   }
+    // } catch (error) {
+    //   console.error("Error searching places:", error);
+    //   placeAutocomplete.innerHTML =
+    //     '<div class="place-suggestion">Error searching places</div>';
+    //   placeAutocomplete.classList.add("active");
+    // }
   }
 
   function displayPlaceSuggestions(places) {
