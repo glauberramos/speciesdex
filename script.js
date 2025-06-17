@@ -11,6 +11,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const percentObserved = document.getElementById("percentObserved");
   const progressBar = document.getElementById("progressBar");
   const showMissingCheckbox = document.getElementById("showMissingOnly");
+  const advancedOptionsButton = document.getElementById(
+    "advancedOptionsButton"
+  );
+  const advancedOptionsSection = document.getElementById(
+    "advancedOptionsSection"
+  );
+  const taxonIdOverrideInput = document.getElementById("taxonIdOverrideInput");
+  const wildCheckbox = document.getElementById("wildCheckbox");
+  const includeAllPlacesCheckbox = document.getElementById(
+    "includeAllPlacesCheckbox"
+  );
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -72,6 +83,15 @@ document.addEventListener("DOMContentLoaded", function () {
     speciesGrid.className = `species-grid`;
     // Save the selected taxon to localStorage
     localStorage.setItem("inatTaxon", taxonSelect.value);
+
+    // Populate the taxonIdOverrideInput with the selected value, or clear if 'all'
+    if (taxonIdOverrideInput) {
+      if (taxonSelect.value === "all") {
+        taxonIdOverrideInput.value = "";
+      } else {
+        taxonIdOverrideInput.value = taxonSelect.value;
+      }
+    }
   });
 
   // Add event listener for taxon selection
@@ -102,10 +122,31 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  if (advancedOptionsButton && advancedOptionsSection) {
+    advancedOptionsButton.addEventListener("click", function () {
+      if (advancedOptionsSection.style.display === "none") {
+        advancedOptionsSection.style.display = "block";
+      } else {
+        advancedOptionsSection.style.display = "none";
+      }
+    });
+  }
+
+  if (taxonIdOverrideInput) {
+    taxonIdOverrideInput.addEventListener("input", function () {
+      if (taxonSelect) {
+        taxonSelect.value = "all";
+      }
+    });
+  }
+
   searchButton.addEventListener("click", async () => {
     placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
-    const taxonId = taxonSelect.value;
+    let taxonId = taxonSelect.value;
+    if (taxonIdOverrideInput && taxonIdOverrideInput.value.trim() !== "") {
+      taxonId = taxonIdOverrideInput.value.trim();
+    }
     showMissingCheckbox.checked = false;
 
     if (!username) {
@@ -144,20 +185,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getUserObservations(username, placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
-    const response = await fetch(
-      `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}&place_id=${placeId}${taxonParam}`
-    );
+    let url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}&place_id=${placeId}${taxonParam}`;
+    if (wildCheckbox && wildCheckbox.checked) {
+      url = url.replace("?", "?captive=false&");
+    }
+    const response = await fetch(url);
     const data = await response.json();
 
-    return new Set(data.results.map((obs) => obs.id));
+    let allObservationIds = new Set(data.results.map((obs) => obs.id));
+
+    if (includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked) {
+      let allPlacesUrl = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${taxonParam}`;
+      if (wildCheckbox && wildCheckbox.checked) {
+        allPlacesUrl = allPlacesUrl.replace("?", "?captive=false&");
+      }
+      const allPlacesResponse = await fetch(allPlacesUrl);
+      const allPlacesData = await allPlacesResponse.json();
+      allPlacesData.results.forEach((obs) => allObservationIds.add(obs.id));
+    }
+
+    return allObservationIds;
   }
 
   async function getTopSpecies(placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
     const limit = document.getElementById("limitSelect").value;
-    const response = await fetch(
-      `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}`
-    );
+    let url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}`;
+    if (wildCheckbox && wildCheckbox.checked) {
+      url = url.replace("?", "?captive=false&");
+    }
+    const response = await fetch(url);
     const data = await response.json();
     return data.results;
   }
@@ -168,6 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const percent = total > 0 ? Math.round((observed / total) * 100) : 0;
     percentObserved.textContent = percent;
     progressBar.style.width = `${percent}%`;
+    percentObserved.textContent = percent;
   }
 
   function displaySpecies(species, userObservations) {
