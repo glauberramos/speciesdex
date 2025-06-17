@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const placeNameInput = document.getElementById("placeNameInput");
   const placeIdInput = document.getElementById("placeIdInput");
   const usernameInput = document.getElementById("usernameInput");
   const taxonSelect = document.getElementById("taxonSelect");
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
   const savedPlaceId = localStorage.getItem("inatPlaceId");
+  const savedPlaceName = localStorage.getItem("inatPlaceName");
   const savedTaxon = localStorage.getItem("inatTaxon");
   const savedLimit = localStorage.getItem("inatLimit");
 
@@ -38,6 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (savedPlaceId) {
     placeIdInput.value = savedPlaceId;
+  }
+
+  if (savedPlaceName) {
+    placeNameInput.value = savedPlaceName;
   }
 
   if (savedTaxon) {
@@ -61,22 +67,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Save place ID when it changes
-  placeIdInput.addEventListener("change", () => {
-    const placeId = placeIdInput.value.trim();
-    if (placeId) {
-      localStorage.setItem("inatPlaceId", placeId);
-    } else {
+  // Save place name when it changes
+  placeNameInput.addEventListener("change", () => {
+    const placeName = placeNameInput.value.trim();
+
+    if (placeName == "") {
+      localStorage.removeItem("inatPlaceName");
       localStorage.removeItem("inatPlaceId");
+      placeIdInput.value = "";
+      placeNameInput.value = "";
     }
   });
 
   // Update grid class name when taxon changes
   taxonSelect.addEventListener("change", () => {
-    const taxonName = taxonSelect.options[taxonSelect.selectedIndex].text
-      .split(" ")[0]
-      .toLowerCase();
-    speciesGrid.className = `species-grid`;
     // Save the selected taxon to localStorage
     localStorage.setItem("inatTaxon", taxonSelect.value);
 
@@ -89,14 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-
-  // Add event listener for taxon selection
-  if (taxonSelect) {
-    taxonSelect.addEventListener("change", function () {
-      const speciesGrid = document.getElementById("speciesGrid");
-      speciesGrid.className = "species-grid";
-    });
-  }
 
   // Add event listener for limit selection
   const limitSelect = document.getElementById("limitSelect");
@@ -137,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   searchButton.addEventListener("click", async () => {
-    const placeId = placeIdInput.value.trim();
+    placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
     let taxonId = taxonSelect.value;
     if (taxonIdOverrideInput && taxonIdOverrideInput.value.trim() !== "") {
@@ -145,9 +141,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     showMissingCheckbox.checked = false;
 
-    if (!placeId || !username) {
+    if (!username) {
       alert("Please enter both place ID and username");
       return;
+    }
+
+    if (!placeId) {
+      placeId = "any";
     }
 
     try {
@@ -226,6 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
     observedCount.textContent = observed;
     totalCount.textContent = total;
     const percent = total > 0 ? Math.round((observed / total) * 100) : 0;
+    percentObserved.textContent = percent;
     progressBar.style.width = `${percent}%`;
     percentObserved.textContent = percent;
   }
@@ -254,9 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "https://via.placeholder.com/300x200?text=No+Image";
 
     // Create the iNaturalist URL for this species in the current place
-    const inatUrl = `https://www.inaturalist.org/observations?place_id=${
-      document.getElementById("placeIdInput").value
-    }&taxon_id=${specimen.taxon.id}`;
+    const inatUrl = `https://www.inaturalist.org/observations?place_id=${placeIdInput.value}&taxon_id=${specimen.taxon.id}`;
 
     card.innerHTML = `
       <a href="${inatUrl}" target="_blank" class="species-link">
