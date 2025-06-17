@@ -82,8 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // Then get the top 100 species for the place
       const topSpecies = await getTopSpecies(placeId, taxonId);
 
-      console.log("top species", topSpecies);
-
       // Display the species
       displaySpecies(topSpecies, userObservations);
     } catch (error) {
