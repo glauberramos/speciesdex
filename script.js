@@ -347,11 +347,6 @@ document.addEventListener("DOMContentLoaded", function () {
         (place) => `
         <div class="place-suggestion" data-id="${place.record.id}">
             <div class="place-name">${place.record.name}</div>
-            <div class="place-details">${
-              place.record.ancestor_place_names
-                ? place.record.ancestor_place_names.join(", ")
-                : ""
-            }</div>
         </div>
     `
       )
