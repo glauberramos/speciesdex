@@ -136,9 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const data = await response.json();
 
-    return new Set(
-      data.results.map((obs) => (obs.rank === "species" ? obs.name : null))
-    );
+    return new Set(data.results.map((obs) => obs.id));
   }
 
   async function getTopSpecies(placeId, taxonId) {
@@ -163,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const total = species.length;
 
     species.forEach((specimen) => {
-      const isObserved = userObservations.has(specimen.taxon.name);
+      const isObserved = userObservations.has(specimen.taxon.id);
       if (isObserved) observed++;
 
       const card = createSpeciesCard(specimen, isObserved);
