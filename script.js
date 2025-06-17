@@ -175,19 +175,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
     const captiveParam =
       wildCheckbox && wildCheckbox.checked ? "&captive=false" : "";
+    const allPlacesParam =
+      includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked
+        ? ""
+        : `&place_id=${placeId}`;
 
-    const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}&place_id=${placeId}${taxonParam}${captiveParam}`;
+    const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${allPlacesParam}${taxonParam}${captiveParam}`;
     const response = await fetch(url);
     const data = await response.json();
 
     let allObservationIds = new Set(data.results.map((obs) => obs.id));
-
-    if (includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked) {
-      const allPlacesUrl = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${taxonParam}${captiveParam}`;
-      const allPlacesResponse = await fetch(allPlacesUrl);
-      const allPlacesData = await allPlacesResponse.json();
-      allPlacesData.results.forEach((obs) => allObservationIds.add(obs.id));
-    }
 
     return allObservationIds;
   }
