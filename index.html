@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpeciesDex - Track Your Nature Observations</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>SpeciesDex</h1>
+        <p class="description">
+          Discover how many of the top 100 most observed species in a place
+          you've already spotted
+        </p>
+        <div class="search-container">
+          <select id="taxonSelect" class="taxon-select">
+            <option value="all" selected>All Species</option>
+            <option value="3">Birds</option>
+            <option value="40151">Mammals</option>
+            <option value="26036">Reptiles</option>
+            <option value="20978">Amphibians</option>
+            <option value="47178">Fish</option>
+            <option value="47158">Insects</option>
+            <option value="47119">Arachnids</option>
+            <option value="47115">Mollusks</option>
+            <option value="47126">Plants</option>
+            <option value="47170">Fungi</option>
+          </select>
+          <input
+            type="number"
+            id="placeIdInput"
+            placeholder="Enter place ID"
+            value="207283"
+          />
+          <input
+            type="text"
+            id="usernameInput"
+            placeholder="Enter iNaturalist username"
+          />
+          <button id="searchButton">Search</button>
+        </div>
+        <div class="status-bar" id="statusBar">
+          <div class="status-text">
+            Observed: <span id="observedCount">0</span> /
+            <span id="totalCount">0</span> species
+          </div>
+          <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="loading" id="loading">Loading...</div>
+        <div class="birds-grid" id="birdsGrid"></div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
