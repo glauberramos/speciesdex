@@ -410,6 +410,12 @@ button:hover {
   background-color: #e1e4e8;
 }
 
+.month-dropdown-button.active-filter {
+  background-color: #27ae60;
+  color: white;
+  border-color: #27ae60;
+}
+
 .month-checkboxes {
   position: absolute;
   background-color: #f9f9f9;

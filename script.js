@@ -159,11 +159,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Save month selections to localStorage
   if (monthCheckboxes) {
-    monthCheckboxes.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    const monthCheckboxesList = monthCheckboxes.querySelectorAll('input[type="checkbox"]');
+    monthCheckboxesList.forEach(checkbox => {
       checkbox.addEventListener('change', () => {
         const selectedMonths = Array.from(monthCheckboxes.querySelectorAll('input[type="checkbox"]:checked'))
           .map(cb => cb.value);
         localStorage.setItem('inatMonths', JSON.stringify(selectedMonths));
+        updateMonthButtonColor(); // Call new function to update button color
       });
     });
   }
@@ -176,6 +178,19 @@ document.addEventListener("DOMContentLoaded", function () {
         checkbox.checked = true;
       }
     });
+    updateMonthButtonColor(); // Call new function to set initial button color
+  }
+
+  // Function to update the month dropdown button's color
+  function updateMonthButtonColor() {
+    if (monthDropdownButton && monthCheckboxes) {
+      const anyMonthSelected = Array.from(monthCheckboxes.querySelectorAll('input[type="checkbox"]:checked')).length > 0;
+      if (anyMonthSelected) {
+        monthDropdownButton.classList.add('active-filter');
+      } else {
+        monthDropdownButton.classList.remove('active-filter');
+      }
+    }
   }
 
   searchButton.addEventListener("click", async () => {
