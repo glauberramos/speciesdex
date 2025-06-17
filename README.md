@@ -1,12 +1,12 @@
-# BirdDex
+# SpeciesDex
 
-A simple web application that shows the top 100 most observed birds in a specific city using the iNaturalist API. It also marks birds that a specific user has already observed in that city, creating a real-life Pokédex experience.
+A simple web application that shows the top 100 most observed species in a specific city using the iNaturalist API. It also marks species that a specific user has already observed in that city, creating a real-life Pokédex experience.
 
 ## Features
 
-- Search for birds by city
-- View top 100 most observed birds in the selected city
-- Mark birds that you've already observed
+- Search for species by city
+- View top 100 most observed species in the selected city
+- Mark species that you've already observed
 - Beautiful card-based interface
 - Responsive design
 
@@ -16,7 +16,7 @@ A simple web application that shows the top 100 most observed birds in a specifi
 2. Enter a city name (e.g., "New York", "London", "Tokyo")
 3. Enter your iNaturalist username
 4. Click the "Search" button
-5. View the results! Birds you've observed will be marked with a green border and checkmark
+5. View the results! Species you've observed will be marked with a green border and checkmark
 
 ## Technical Details
 
