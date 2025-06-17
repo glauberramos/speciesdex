@@ -97,13 +97,13 @@ document.addEventListener("DOMContentLoaded", function () {
   async function getUserObservations(username, placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
     const response = await fetch(
-      `https://api.inaturalist.org/v1/observations?user_login=${username}&place_id=${placeId}&per_page=200${taxonParam}`
+      `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}&place_id=${placeId}${taxonParam}`
     );
     const data = await response.json();
 
-    console.log("user observations", data.results);
-
-    return new Set(data.results.map((obs) => obs.taxon.id));
+    return new Set(
+      data.results.map((obs) => (obs.rank === "species" ? obs.name : null))
+    );
   }
 
   async function getTopSpecies(placeId, taxonId) {
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const total = species.length;
 
     species.forEach((specimen) => {
-      const isObserved = userObservations.has(specimen.taxon.id);
+      const isObserved = userObservations.has(specimen.taxon.name);
       if (isObserved) observed++;
 
       const card = createSpeciesCard(specimen, isObserved);
