@@ -79,12 +79,10 @@ document.addEventListener("DOMContentLoaded", function () {
         taxonId
       );
 
-      console.log(userObservations);
-
       // Then get the top 100 species for the place
       const topSpecies = await getTopSpecies(placeId, taxonId);
 
-      console.log(topSpecies);
+      console.log("top species", topSpecies);
 
       // Display the species
       displaySpecies(topSpecies, userObservations);
@@ -102,6 +100,9 @@ document.addEventListener("DOMContentLoaded", function () {
       `https://api.inaturalist.org/v1/observations?user_login=${username}&place_id=${placeId}&per_page=200${taxonParam}`
     );
     const data = await response.json();
+
+    console.log("user observations", data.results);
+
     return new Set(data.results.map((obs) => obs.taxon.id));
   }
 
@@ -129,26 +130,34 @@ document.addEventListener("DOMContentLoaded", function () {
       const isObserved = userObservations.has(specimen.taxon.id);
       if (isObserved) observed++;
 
-      const card = document.createElement("div");
-      card.className = `species-card ${isObserved ? "observed" : ""}`;
-
-      const imageUrl =
-        specimen.taxon.default_photo?.medium_url ||
-        "https://via.placeholder.com/300x200?text=No+Image";
-
-      card.innerHTML = `
-                <img src="${imageUrl}" alt="${specimen.taxon.name}">
-                <h3>${
-                  specimen.taxon.preferred_common_name || specimen.taxon.name
-                }</h3>
-                <p class="scientific-name">${specimen.taxon.name}</p>
-                <p class="observations">Observations: ${specimen.count}</p>
-            `;
-
+      const card = createSpeciesCard(specimen, isObserved);
       speciesGrid.appendChild(card);
     });
 
     updateStatus(observed, total);
+  }
+
+  function createSpeciesCard(specimen, isObserved) {
+    const card = document.createElement("div");
+    card.className = `species-card ${isObserved ? "observed" : ""}`;
+    const imageUrl =
+      specimen.taxon.default_photo?.medium_url ||
+      "https://via.placeholder.com/300x200?text=No+Image";
+
+    // Create the iNaturalist URL for this species in the current place
+    const inatUrl = `https://www.inaturalist.org/observations?place_id=${
+      document.getElementById("placeIdInput").value
+    }&taxon_id=${specimen.taxon.id}`;
+
+    card.innerHTML = `
+      <a href="${inatUrl}" target="_blank" class="species-link">
+        <img src="${imageUrl}" alt="${specimen.taxon.name}">
+        <h3>${specimen.taxon.preferred_common_name || specimen.taxon.name}</h3>
+        <p class="scientific-name">${specimen.taxon.name}</p>
+        <p class="observations">Observations: ${specimen.count}</p>
+      </a>
+    `;
+    return card;
   }
 
   // Add event listener for taxon selection

@@ -167,6 +167,17 @@ button:hover {
   transform: translateY(-5px);
 }
 
+.species-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.species-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
 .species-card img {
   width: 100%;
   height: 200px;
