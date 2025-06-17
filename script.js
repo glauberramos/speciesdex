@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const observedCount = document.getElementById("observedCount");
   const totalCount = document.getElementById("totalCount");
   const progressBar = document.getElementById("progressBar");
+  const showMissingCheckbox = document.getElementById("showMissingOnly");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -82,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Add event listener for show missing checkbox
-  const showMissingCheckbox = document.getElementById("showMissingOnly");
   if (showMissingCheckbox) {
     showMissingCheckbox.addEventListener("change", function () {
       // If we have data loaded, filter it
@@ -171,6 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     updateStatus(observed, total);
+    document.querySelector(".checkbox-container").style.display = "inline-flex";
   }
 
   function createSpeciesCard(specimen, isObserved) {
