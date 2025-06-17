@@ -9,10 +9,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalCount = document.getElementById("totalCount");
   const progressBar = document.getElementById("progressBar");
 
-  // Load saved username from localStorage
+  // Load saved username, place ID, and taxon from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
+  const savedPlaceId = localStorage.getItem("inatPlaceId");
+  const savedTaxon = localStorage.getItem("inatTaxon");
+
   if (savedUsername) {
     usernameInput.value = savedUsername;
+  }
+  if (savedPlaceId) {
+    placeIdInput.value = savedPlaceId;
+  }
+  if (savedTaxon) {
+    taxonSelect.value = savedTaxon;
+    // Trigger the change event to update the grid class
+    const event = new Event("change");
+    taxonSelect.dispatchEvent(event);
   }
 
   // Save username when it changes
@@ -31,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .split(" ")[0]
       .toLowerCase();
     speciesGrid.className = `${taxonName}-grid`;
+    // Save the selected taxon to localStorage
+    localStorage.setItem("inatTaxon", taxonSelect.value);
   });
 
   searchButton.addEventListener("click", async () => {
