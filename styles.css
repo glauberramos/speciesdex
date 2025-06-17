@@ -39,6 +39,7 @@ h1 {
 
 .search-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
   margin-bottom: 20px;
@@ -260,13 +261,18 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0 20px 0;
+  margin-bottom: 20px;
   background: none;
   border: none;
   border-radius: 0;
   box-shadow: none;
   padding: 0;
   max-width: none;
+}
+
+.advanced-options-checkbox {
+  display: inline-block;
+  margin-top: 10px;
 }
 
 #advancedOptionsButton {
