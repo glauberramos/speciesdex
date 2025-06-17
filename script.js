@@ -37,6 +37,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Save place ID when it changes
+  placeIdInput.addEventListener("change", () => {
+    const placeId = placeIdInput.value.trim();
+    if (placeId) {
+      localStorage.setItem("inatPlaceId", placeId);
+    } else {
+      localStorage.removeItem("inatPlaceId");
+    }
+  });
+
   // Update grid class name when taxon changes
   taxonSelect.addEventListener("change", () => {
     const taxonName = taxonSelect.options[taxonSelect.selectedIndex].text
