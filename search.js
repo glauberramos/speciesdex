@@ -240,7 +240,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function displayTaxonSuggestions(taxa) {
-    console.log(taxa);
     taxonAutocomplete.innerHTML = taxa
       .map(
         (taxon) => `

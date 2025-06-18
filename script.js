@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     "researchGradeCheckbox"
   );
   const threatenedCheckbox = document.getElementById("threatenedCheckbox");
-  const taxonAutocomplete = document.getElementById("taxonAutocomplete");
   const languageSelect = document.getElementById("languageSelect");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
