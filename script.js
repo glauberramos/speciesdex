@@ -255,21 +255,72 @@ document.addEventListener("DOMContentLoaded", function () {
   function createSpeciesCard(specimen, isObserved) {
     const card = document.createElement("div");
     card.className = `species-card ${isObserved ? "observed" : ""}`;
-    const imageUrl =
-      specimen.taxon.default_photo?.medium_url ||
-      "https://via.placeholder.com/300x200?text=No+Image";
 
     // Create the iNaturalist URL for this species in the current place
     const inatUrl = `https://www.inaturalist.org/observations?place_id=${placeIdInput.value}&taxon_id=${specimen.taxon.id}`;
 
+    // Create status labels container
+    const statusContainer = document.createElement("div");
+    statusContainer.className = "species-status";
+
+    // Add status labels based on taxon properties
+    if (specimen.taxon.conservation_status) {
+      const threatenedLabel = document.createElement("span");
+      threatenedLabel.className = "status-label status-threatened";
+      threatenedLabel.textContent = "Threatened";
+      statusContainer.appendChild(threatenedLabel);
+    }
+
+    if (
+      specimen.taxon.establishment_means &&
+      specimen.taxon.establishment_means.establishment_means == "introduced"
+    ) {
+      const introducedLabel = document.createElement("span");
+      introducedLabel.className = "status-label status-introduced";
+      introducedLabel.textContent = "Introduced";
+      statusContainer.appendChild(introducedLabel);
+    }
+
+    if (
+      specimen.taxon.establishment_means &&
+      specimen.taxon.establishment_means.establishment_means == "endemic"
+    ) {
+      const endemicLabel = document.createElement("span");
+      endemicLabel.className = "status-label status-endemic";
+      endemicLabel.textContent = "Endemic";
+      statusContainer.appendChild(endemicLabel);
+    }
+
+    if (
+      specimen.taxon.establishment_means &&
+      specimen.taxon.establishment_means.establishment_means == "native"
+    ) {
+      const nativeLabel = document.createElement("span");
+      nativeLabel.className = "status-label status-native";
+      nativeLabel.textContent = "Native";
+      statusContainer.appendChild(nativeLabel);
+    }
+
+    const imageUrl =
+      specimen.taxon.default_photo?.medium_url ||
+      "https://via.placeholder.com/300x200?text=No+Image";
+
     card.innerHTML = `
       <a href="${inatUrl}" target="_blank" class="species-link">
-        <img src="${imageUrl}" alt="${specimen.taxon.name}">
-        <h3>${specimen.taxon.preferred_common_name || specimen.taxon.name}</h3>
+        <img src="${imageUrl}" alt="${specimen.taxon.name}" />
+        <div class="species-info">
+          <h3>${
+            specimen.taxon.preferred_common_name || specimen.taxon.name
+          }</h3>
         <p class="scientific-name">${specimen.taxon.name}</p>
         <p class="observations">Observations: ${specimen.count}</p>
+        </div>
       </a>
     `;
+
+    // Insert status labels at the beginning of the card
+    card.insertBefore(statusContainer, card.firstChild);
+
     return card;
   }
 

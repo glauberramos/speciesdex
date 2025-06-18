@@ -218,6 +218,41 @@ button:hover {
   font-weight: bold;
 }
 
+.species-status {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.status-label {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: white;
+}
+
+.status-threatened {
+  background-color: #d12f19;
+}
+
+.status-introduced {
+  background-color: #f39c12;
+}
+
+.status-endemic {
+  background-color: #84a92f;
+}
+
+.status-native {
+  background-color: #84a92f;
+}
+
 @media (max-width: 1200px) {
   .species-grid {
     grid-template-columns: repeat(4, 1fr);
