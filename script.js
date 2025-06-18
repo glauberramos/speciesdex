@@ -92,16 +92,17 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Update grid class name when taxon changes
-  taxonSelect.addEventListener("change", () => {
+  taxonSelect.addEventListener("change", (selected) => {
     // Save the selected taxon to localStorage
-    localStorage.setItem("inatTaxon", taxonSelect.value);
+    localStorage.setItem("inatTaxonId", taxonSelect.value);
 
     // Populate the taxonIdOverrideInput with the selected value, or clear if 'all'
     if (taxonIdOverrideInput) {
       if (taxonSelect.value === "all") {
         taxonIdOverrideInput.value = "";
       } else {
-        taxonIdOverrideInput.value = taxonSelect.value;
+        taxonIdOverrideInput.value =
+          taxonSelect.options[taxonSelect.selectedIndex].text;
       }
     }
   });

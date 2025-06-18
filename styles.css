@@ -346,13 +346,14 @@ input[type="checkbox"] {
 }
 
 .taxon-search-container {
-  position: absolute;
+  position: relative;
+  display: inline-block;
 }
 
 .taxon-autocomplete {
-  position: relative;
-  top: 0;
-  right: 0;
+  position: absolute;
+  top: 43px;
+  right: 10px;
   background: white;
   border: 2px solid #ddd;
   border-top: none;
