@@ -44,7 +44,11 @@ document.addEventListener("DOMContentLoaded", function () {
     placeNameInput.value = savedPlaceName;
   }
 
-  if (savedTaxon) {
+  if (
+    savedTaxon &&
+    [...taxonSelect.options].map((option) => option.value).indexOf(savedTaxon) >
+      -1
+  ) {
     taxonSelect.value = savedTaxon;
   }
 
