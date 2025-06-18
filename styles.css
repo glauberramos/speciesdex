@@ -397,6 +397,7 @@ input[type="checkbox"] {
   cursor: pointer;
   transition: background-color 0.2s;
   text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
 .place-suggestion:hover {

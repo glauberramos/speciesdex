@@ -46,13 +46,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function displayPlaceSuggestions(places) {
     placeAutocomplete.innerHTML = places
-      .map(
-        (place) => `
+      .map((place) => {
+        return `
       <div class="place-suggestion" data-id="${place.record.id}">
-          <div class="place-name">${place.record.name}</div>
+          <div class="place-name">${
+            place.record.place_type === 12 || place.record.place_type === 29
+              ? place.record.name
+              : place.matches && place.matches.length > 0
+              ? place.matches.join(", ")
+              : place.record.name
+          }</div>
       </div>
-  `
-      )
+  `;
+      })
       .join("");
 
     placeAutocomplete.classList.add("active");
