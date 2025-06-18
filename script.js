@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const percentObserved = document.getElementById("percentObserved");
   const progressBar = document.getElementById("progressBar");
   const showMissingCheckbox = document.getElementById("showMissingOnly");
+  const showSpottedCheckbox = document.getElementById("showSpottedOnly");
   const advancedOptionsButton = document.getElementById(
     "advancedOptionsButton"
   );
@@ -104,16 +105,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Add event listener for show missing checkbox
-  if (showMissingCheckbox) {
-    showMissingCheckbox.addEventListener("change", function () {
-      // If we have data loaded, filter it
-      const speciesGrid = document.getElementById("speciesGrid");
-      if (speciesGrid.children.length > 0) {
-        filterSpecies();
-      }
-    });
-  }
+  // Add event listeners for checkboxes
+  showMissingCheckbox.addEventListener("change", () => {
+    if (showMissingCheckbox.checked) {
+      showSpottedCheckbox.checked = false;
+    }
+    filterSpecies();
+  });
+
+  showSpottedCheckbox.addEventListener("change", () => {
+    if (showSpottedCheckbox.checked) {
+      showMissingCheckbox.checked = false;
+    }
+    filterSpecies();
+  });
 
   if (advancedOptionsButton && advancedOptionsSection) {
     advancedOptionsButton.addEventListener("click", function () {
@@ -141,6 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
       taxonId = taxonIdOverrideInput.value.trim();
     }
     showMissingCheckbox.checked = false;
+    showSpottedCheckbox.checked = false;
 
     if (!username) {
       alert("Please enter username");
@@ -325,18 +331,22 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function filterSpecies() {
-    const showMissingOnly = document.getElementById("showMissingOnly").checked;
-    const speciesGrid = document.getElementById("speciesGrid");
-    const cards = speciesGrid.getElementsByClassName("species-card");
+    const cards = document.querySelectorAll(".species-card");
+    const showMissing = showMissingCheckbox.checked;
+    const showSpotted = showSpottedCheckbox.checked;
 
-    for (let card of cards) {
-      if (showMissingOnly) {
+    cards.forEach((card) => {
+      if (showMissing) {
         card.style.display = card.classList.contains("observed")
           ? "none"
           : "block";
+      } else if (showSpotted) {
+        card.style.display = card.classList.contains("observed")
+          ? "block"
+          : "none";
       } else {
         card.style.display = "block";
       }
-    }
+    });
   }
 });
