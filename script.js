@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const savedUsername = localStorage.getItem("inatUsername");
   const savedPlaceId = localStorage.getItem("inatPlaceId");
   const savedPlaceName = localStorage.getItem("inatPlaceName");
-  const savedTaxon = localStorage.getItem("inatTaxon");
+  const savedTaxonId = localStorage.getItem("inatTaxonId");
   const savedLimit = localStorage.getItem("inatLimit");
 
   if (savedPlaceId) {
