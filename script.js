@@ -291,15 +291,15 @@ document.addEventListener("DOMContentLoaded", function () {
       statusContainer.appendChild(endemicLabel);
     }
 
-    if (
-      specimen.taxon.establishment_means &&
-      specimen.taxon.establishment_means.establishment_means == "native"
-    ) {
-      const nativeLabel = document.createElement("span");
-      nativeLabel.className = "status-label status-native";
-      nativeLabel.textContent = "Native";
-      statusContainer.appendChild(nativeLabel);
-    }
+    // if (
+    //   specimen.taxon.establishment_means &&
+    //   specimen.taxon.establishment_means.establishment_means == "native"
+    // ) {
+    //   const nativeLabel = document.createElement("span");
+    //   nativeLabel.className = "status-label status-native";
+    //   nativeLabel.textContent = "Native";
+    //   statusContainer.appendChild(nativeLabel);
+    // }
 
     const imageUrl =
       specimen.taxon.default_photo?.medium_url ||
