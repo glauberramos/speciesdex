@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "researchGradeCheckbox"
   );
   const threatenedCheckbox = document.getElementById("threatenedCheckbox");
+  const taxonAutocomplete = document.getElementById("taxonAutocomplete");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -81,17 +82,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Save taxon name when it changes
+  taxonIdOverrideInput.addEventListener("change", () => {
+    const taxonName = taxonIdOverrideInput.value.trim();
+
+    if (taxonName == "") {
+      localStorage.removeItem("inatTaxonId");
+      taxonIdOverrideInput.value = "";
+    }
+  });
+
   // Update grid class name when taxon changes
-  taxonSelect.addEventListener("change", () => {
+  taxonSelect.addEventListener("change", (selected) => {
     // Save the selected taxon to localStorage
-    localStorage.setItem("inatTaxon", taxonSelect.value);
+    localStorage.setItem("inatTaxonId", taxonSelect.value);
 
     // Populate the taxonIdOverrideInput with the selected value, or clear if 'all'
     if (taxonIdOverrideInput) {
       if (taxonSelect.value === "all") {
         taxonIdOverrideInput.value = "";
       } else {
-        taxonIdOverrideInput.value = taxonSelect.value;
+        taxonIdOverrideInput.value =
+          taxonSelect.options[taxonSelect.selectedIndex].text;
       }
     }
   });
@@ -142,9 +154,12 @@ document.addEventListener("DOMContentLoaded", function () {
     placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
     let taxonId = taxonSelect.value;
+
+    // Check if we have a taxon ID from the search
     if (taxonIdOverrideInput && taxonIdOverrideInput.value.trim() !== "") {
-      taxonId = taxonIdOverrideInput.value.trim();
+      taxonId = localStorage.getItem("inatTaxonId");
     }
+
     showMissingCheckbox.checked = false;
     showSpottedCheckbox.checked = false;
 

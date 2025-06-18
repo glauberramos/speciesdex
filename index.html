@@ -66,11 +66,15 @@
           class="advanced-options-section"
           style="display: none"
         >
-          <input
-            id="taxonIdOverrideInput"
-            class="taxon-id-override-input"
-            placeholder="Taxon ID"
-          />
+          <div class="taxon-search-container">
+            <input
+              id="taxonIdOverrideInput"
+              class="taxon-id-override-input"
+              placeholder="Search for a taxon..."
+              autocomplete="off"
+            />
+            <div id="taxonAutocomplete" class="taxon-autocomplete"></div>
+          </div>
           <span class="advanced-options-checkbox">
             <input type="checkbox" id="wildCheckbox" class="wild-checkbox" />
             <label for="wildCheckbox">Wild</label>
