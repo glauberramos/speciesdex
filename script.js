@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   const threatenedCheckbox = document.getElementById("threatenedCheckbox");
   const taxonAutocomplete = document.getElementById("taxonAutocomplete");
+  const languageSelect = document.getElementById("languageSelect");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -240,8 +241,11 @@ document.addEventListener("DOMContentLoaded", function () {
         ? "&threatened=true"
         : "";
     const limit = document.getElementById("limitSelect").value;
+    const selectedLanguage = languageSelect ? languageSelect.value : "en";
+    const languageParam =
+      selectedLanguage !== "en" ? `&locale=${selectedLanguage}` : "";
 
-    const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}${researchGrade}${threatened}`;
+    const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}${researchGrade}${threatened}${languageParam}`;
     const response = await fetch(url);
     const data = await response.json();
 
