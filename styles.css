@@ -249,10 +249,6 @@ button:hover {
   background-color: #84a92f;
 }
 
-.status-native {
-  background-color: #84a92f;
-}
-
 @media (max-width: 1200px) {
   .species-grid {
     grid-template-columns: repeat(4, 1fr);
