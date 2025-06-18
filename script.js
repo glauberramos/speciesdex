@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "researchGradeCheckbox"
   );
   const threatenedCheckbox = document.getElementById("threatenedCheckbox");
+  const taxonAutocomplete = document.getElementById("taxonAutocomplete");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -77,6 +78,16 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.removeItem("inatPlaceId");
       placeIdInput.value = "";
       placeNameInput.value = "";
+    }
+  });
+
+  // Save taxon name when it changes
+  taxonIdOverrideInput.addEventListener("change", () => {
+    const taxonName = taxonIdOverrideInput.value.trim();
+
+    if (taxonName == "") {
+      localStorage.removeItem("inatTaxonId");
+      taxonIdOverrideInput.value = "";
     }
   });
 
@@ -133,13 +144,108 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Taxon search functionality
+  let taxonSearchTimeout;
+
+  taxonIdOverrideInput.addEventListener("input", (e) => {
+    const query = e.target.value.trim();
+
+    // Clear previous timeout
+    if (taxonSearchTimeout) {
+      clearTimeout(taxonSearchTimeout);
+    }
+
+    // Clear autocomplete if input is empty
+    if (!query) {
+      taxonAutocomplete.innerHTML = "";
+      taxonAutocomplete.classList.remove("active");
+      return;
+    }
+
+    // Set new timeout to prevent too many API calls
+    taxonSearchTimeout = setTimeout(() => {
+      searchTaxons(query);
+    }, 300);
+  });
+
+  async function searchTaxons(query) {
+    try {
+      const response = await fetch(
+        `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(
+          query
+        )}&rank=genus,family,order,class,phylum,kingdom`
+      );
+      const data = await response.json();
+
+      if (data.results && data.results.length > 0) {
+        displayTaxonSuggestions(data.results);
+      } else {
+        taxonAutocomplete.innerHTML =
+          '<div class="taxon-suggestion">No taxa found</div>';
+        taxonAutocomplete.classList.add("active");
+      }
+    } catch (error) {
+      console.error("Error searching taxa:", error);
+      taxonAutocomplete.innerHTML =
+        '<div class="taxon-suggestion">Error searching taxa</div>';
+      taxonAutocomplete.classList.add("active");
+    }
+  }
+
+  function displayTaxonSuggestions(taxa) {
+    console.log(taxa);
+    taxonAutocomplete.innerHTML = taxa
+      .map(
+        (taxon) => `
+        <div class="taxon-suggestion" data-id="${taxon.id}">
+          <div class="taxon-name">${taxon.name}</div>
+          <div class="taxon-rank">${taxon.rank}${
+          taxon.preferred_common_name ? ` - ${taxon.preferred_common_name}` : ""
+        }</div>
+        </div>
+      `
+      )
+      .join("");
+
+    taxonAutocomplete.classList.add("active");
+
+    // Add click handlers to suggestions
+    const suggestions = taxonAutocomplete.querySelectorAll(".taxon-suggestion");
+    suggestions.forEach((suggestion) => {
+      suggestion.addEventListener("click", () => {
+        const taxonId = suggestion.dataset.id;
+        const taxonName = suggestion.querySelector(".taxon-name").textContent;
+
+        // Update input and save to localStorage
+        taxonIdOverrideInput.value = taxonName;
+        localStorage.setItem("inatTaxonId", taxonId);
+
+        // Hide autocomplete
+        taxonAutocomplete.classList.remove("active");
+      });
+    });
+  }
+
+  // Close taxon autocomplete when clicking outside
+  document.addEventListener("click", (e) => {
+    if (
+      !taxonIdOverrideInput.contains(e.target) &&
+      !taxonAutocomplete.contains(e.target)
+    ) {
+      taxonAutocomplete.classList.remove("active");
+    }
+  });
+
   async function searchEspecies() {
     placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
     let taxonId = taxonSelect.value;
+
+    // Check if we have a taxon ID from the search
     if (taxonIdOverrideInput && taxonIdOverrideInput.value.trim() !== "") {
-      taxonId = taxonIdOverrideInput.value.trim();
+      taxonId = localStorage.getItem("inatTaxonId");
     }
+
     showMissingCheckbox.checked = false;
 
     if (!username) {
