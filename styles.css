@@ -655,7 +655,7 @@ input[type="checkbox"] {
 }
 
 .download-button {
-  background-color: #27ae60;
+  background-color: #95a5a6;
   color: white;
   border: none;
   border-radius: 5px;
@@ -666,10 +666,10 @@ input[type="checkbox"] {
 }
 
 .download-button:hover:not(:disabled) {
-  background-color: #219a52;
+  background-color: #7f8c8d;
 }
 
 .download-button:disabled {
-  background-color: #ccc;
+  background-color: #bdc3c7;
   cursor: not-allowed;
 }
