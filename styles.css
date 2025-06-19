@@ -23,6 +23,35 @@ header {
   margin-bottom: 20px;
 }
 
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.header-text h1 {
+  margin-bottom: 10px;
+}
+
+.header-text .description {
+  margin: 0;
+}
+
 h1 {
   font-size: 2.5rem;
   color: #2c3e50;
@@ -268,6 +297,20 @@ button:hover {
 
   .description {
     padding: 0 20px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .title-container {
+    gap: 10px;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
   }
 }
 
