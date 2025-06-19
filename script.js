@@ -155,6 +155,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Allow Enter key to trigger search on username input
+  usernameInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      searchEspecies();
+    }
+  });
+
   async function searchEspecies() {
     placeId = placeIdInput.value.trim();
     const username = usernameInput.value.trim();
