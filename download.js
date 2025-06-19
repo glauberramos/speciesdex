@@ -13,14 +13,18 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    const username = usernameInput.value.trim();
-    const placeName = placeNameInput.value.trim();
+    const username = document.getElementById("usernameInput").value.trim();
+    const placeName = document.getElementById("placeNameInput").value.trim();
     const currentDate = new Date().toLocaleDateString();
 
     // Get taxon name from the select dropdown
     const taxonSelect = document.getElementById("taxonSelect");
     const selectedTaxonOption = taxonSelect.options[taxonSelect.selectedIndex];
     const taxonName = selectedTaxonOption.text;
+
+    // Use "WHOLE WORLD" if no place is selected
+    const displayPlaceName = placeName || "THE WHOLE WORLD";
+    const fileNamePlaceName = placeName || "the-whole-world";
 
     let spottedSpecies = [];
     let missingSpecies = [];
@@ -42,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const content = generateSpeciesListText(
       username,
-      placeName,
+      displayPlaceName,
       taxonName,
       currentDate,
       spottedSpecies,
@@ -54,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `species-list-${placeName
+    a.download = `species-list-${fileNamePlaceName
       .replace(/[^a-z0-9]/gi, "-")
       .toLowerCase()}-${taxonName
       .replace(/[^a-z0-9]/gi, "-")
