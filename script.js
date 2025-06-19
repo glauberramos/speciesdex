@@ -214,6 +214,14 @@ document.addEventListener("DOMContentLoaded", function () {
     searchEspecies();
   });
 
+  // Add event listener for the advanced search button
+  const searchButtonAdvanced = document.getElementById("searchButtonAdvanced");
+  if (searchButtonAdvanced) {
+    searchButtonAdvanced.addEventListener("click", async () => {
+      searchEspecies();
+    });
+  }
+
   async function getUserObservations(username, placeId, taxonId) {
     const taxonParam = taxonId === "all" ? "" : `&taxon_id=${taxonId}`;
     const captiveParam =
