@@ -17,10 +17,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const placeName = document.getElementById("placeNameInput").value.trim();
     const currentDate = new Date().toLocaleDateString();
 
-    // Get taxon name from the select dropdown
+    // Get taxon name from the select dropdown or override input
     const taxonSelect = document.getElementById("taxonSelect");
-    const selectedTaxonOption = taxonSelect.options[taxonSelect.selectedIndex];
-    const taxonName = selectedTaxonOption.text;
+    const taxonIdOverrideInput = document.getElementById(
+      "taxonIdOverrideInput"
+    );
+
+    let taxonName;
+    if (taxonIdOverrideInput && taxonIdOverrideInput.value.trim() !== "") {
+      // Use custom taxon name from override input
+      taxonName = taxonIdOverrideInput.value.trim();
+    } else {
+      // Use taxon name from select dropdown
+      const selectedTaxonOption =
+        taxonSelect.options[taxonSelect.selectedIndex];
+      taxonName = selectedTaxonOption.text;
+    }
 
     // Use "WHOLE WORLD" if no place is selected
     const displayPlaceName = placeName || "THE WHOLE WORLD";
