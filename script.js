@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "researchGradeCheckbox"
   );
   const threatenedCheckbox = document.getElementById("threatenedCheckbox");
+  const verifiableCheckbox = document.getElementById("verifiableCheckbox");
   const languageSelect = document.getElementById("languageSelect");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
@@ -217,12 +218,16 @@ document.addEventListener("DOMContentLoaded", function () {
       threatenedCheckbox && threatenedCheckbox.checked
         ? "&threatened=true"
         : "";
+    const verifiable =
+      verifiableCheckbox && verifiableCheckbox.checked
+        ? "&verifiable=true"
+        : "";
     const allPlacesParam =
       includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked
         ? ""
         : `&place_id=${placeId}`;
 
-    const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${allPlacesParam}${taxonParam}${captiveParam}${researchGrade}${threatened}`;
+    const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${allPlacesParam}${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}`;
     const response = await fetch(url);
     const data = await response.json();
 
@@ -243,12 +248,16 @@ document.addEventListener("DOMContentLoaded", function () {
       threatenedCheckbox && threatenedCheckbox.checked
         ? "&threatened=true"
         : "";
+    const verifiable =
+      verifiableCheckbox && verifiableCheckbox.checked
+        ? "&verifiable=true"
+        : "";
     const limit = document.getElementById("limitSelect").value;
     const selectedLanguage = languageSelect ? languageSelect.value : "en";
     const languageParam =
       selectedLanguage !== "en" ? `&locale=${selectedLanguage}` : "";
 
-    const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}${researchGrade}${threatened}${languageParam}`;
+    const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`;
     const response = await fetch(url);
     const data = await response.json();
 

@@ -303,7 +303,8 @@ button:hover {
 
 .advanced-options-checkbox {
   display: inline-block;
-  margin-top: 10px;
+  position: relative;
+  top: 5px;
 }
 
 #advancedOptionsButton {
@@ -327,7 +328,7 @@ input[type="checkbox"] {
   accent-color: #27ae60;
   width: 18px;
   height: 18px;
-  margin-left: 24px;
+  margin-left: 15px;
 }
 
 .taxon-id-override-input {
@@ -541,4 +542,66 @@ input[type="checkbox"] {
   outline: none;
   border-color: #3498db;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Tooltip styles */
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 15px;
+}
+
+.tooltip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: help;
+  transition: background-color 0.2s;
+}
+
+.tooltip-icon:hover {
+  background-color: #2980b9;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 280px;
+  background-color: #2c3e50;
+  color: white;
+  text-align: left;
+  border-radius: 6px;
+  padding: 12px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #2c3e50 transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
