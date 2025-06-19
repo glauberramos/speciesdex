@@ -648,3 +648,28 @@ input[type="checkbox"] {
   visibility: visible;
   opacity: 1;
 }
+
+.download-section {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.download-button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover:not(:disabled) {
+  background-color: #219a52;
+}
+
+.download-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

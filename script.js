@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const threatenedCheckbox = document.getElementById("threatenedCheckbox");
   const verifiableCheckbox = document.getElementById("verifiableCheckbox");
   const languageSelect = document.getElementById("languageSelect");
+  const downloadButton = document.getElementById("downloadButton");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -294,6 +295,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateStatus(observed, total);
     document.querySelector(".checkbox-container").style.display = "inline-flex";
+
+    // Enable download button after successful search
+    if (downloadButton) {
+      downloadButton.disabled = false;
+    }
   }
 
   function createSpeciesCard(specimen, isObserved) {
