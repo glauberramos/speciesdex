@@ -89,6 +89,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (placeName == "") {
       localStorage.removeItem("inatPlaceName");
       localStorage.removeItem("inatPlaceId");
+      localStorage.removeItem("inatProject");
+      localStorage.removeItem("inatProjectId");
       placeIdInput.value = "";
       placeNameInput.value = "";
     }
