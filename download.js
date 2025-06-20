@@ -34,9 +34,27 @@ document.addEventListener("DOMContentLoaded", function () {
       taxonName = selectedTaxonOption.text;
     }
 
-    // Use "WHOLE WORLD" if no place is selected
-    const displayPlaceName = placeName || "THE WHOLE WORLD";
-    const fileNamePlaceName = placeName || "the-whole-world";
+    // Check if we have a project selected
+    const projectName = localStorage.getItem("inatProject");
+    const projectId = localStorage.getItem("inatProjectId");
+
+    // Determine location type and name
+    let locationType = "Location";
+    let displayLocationName;
+    let fileNameLocationName;
+
+    if (projectName && projectId) {
+      locationType = "Project";
+      displayLocationName = projectName;
+      fileNameLocationName = projectName
+        .replace(/[^a-z0-9]/gi, "-")
+        .toLowerCase();
+    } else {
+      displayLocationName = placeName || "THE WHOLE WORLD";
+      fileNameLocationName = placeName
+        ? placeName.replace(/[^a-z0-9]/gi, "-").toLowerCase()
+        : "the-whole-world";
+    }
 
     let spottedSpecies = [];
     let missingSpecies = [];
@@ -58,7 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const content = generateSpeciesListText(
       username,
-      displayPlaceName,
+      displayLocationName,
+      locationType,
       taxonName,
       currentDate,
       spottedSpecies,
@@ -70,9 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `species-list-${fileNamePlaceName
-      .replace(/[^a-z0-9]/gi, "-")
-      .toLowerCase()}-${taxonName
+    a.download = `species-list-${fileNameLocationName}-${taxonName
       .replace(/[^a-z0-9]/gi, "-")
       .toLowerCase()}-${currentDate.replace(/\//g, "-")}.txt`;
     document.body.appendChild(a);
@@ -83,7 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function generateSpeciesListText(
     username,
-    placeName,
+    locationName,
+    locationType,
     taxonName,
     date,
     spottedSpecies,
@@ -95,13 +113,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const percentage =
       totalSpecies > 0 ? Math.round((spottedCount / totalSpecies) * 100) : 0;
 
-    return `SPECIES LIST FOR ${placeName.toUpperCase()}
+    return `SPECIES LIST FOR ${locationName.toUpperCase()}
+${locationType}: ${locationName}
 Taxon Group: ${taxonName}
 Generated for: ${username}
 Date: ${date}
 
 SUMMARY:
-- Total species in this location: ${totalSpecies}
+- Total species in this ${locationType.toLowerCase()}: ${totalSpecies}
 - Species you've observed: ${spottedCount}
 - Species you haven't observed: ${missingCount}
 - Completion percentage: ${percentage}%

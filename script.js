@@ -238,10 +238,24 @@ document.addEventListener("DOMContentLoaded", function () {
       verifiableCheckbox && verifiableCheckbox.checked
         ? "&verifiable=true"
         : "";
-    const allPlacesParam =
-      includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked
-        ? ""
-        : `&place_id=${placeId}`;
+
+    // Check if we have a project selected instead of a place
+    const projectId = localStorage.getItem("inatProjectId");
+    let allPlacesParam = "";
+
+    if (projectId) {
+      // If project is selected, use project filtering
+      allPlacesParam =
+        includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked
+          ? ""
+          : `&project_id=${projectId}`;
+    } else {
+      // If place is selected, use place filtering
+      allPlacesParam =
+        includeAllPlacesCheckbox && includeAllPlacesCheckbox.checked
+          ? ""
+          : `&place_id=${placeId}`;
+    }
 
     const url = `https://api.inaturalist.org/v1/observations/taxonomy?user_login=${username}${allPlacesParam}${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}`;
     const response = await fetch(url);
@@ -273,18 +287,34 @@ document.addEventListener("DOMContentLoaded", function () {
     const languageParam =
       selectedLanguage !== "en" ? `&locale=${selectedLanguage}` : "";
 
+    // Check if we have a project selected instead of a place
+    const projectId = localStorage.getItem("inatProjectId");
+    let locationParam = "";
+
+    if (projectId) {
+      // If project is selected, use project filtering
+      locationParam = `&project_id=${projectId}`;
+    } else {
+      // If place is selected, use place filtering
+      locationParam = `&place_id=${placeId}`;
+    }
+
     // Handle 1000 species by making two API calls
     if (limit === "1000") {
       const results = [];
 
       // First call: get first 500 species
-      const url1 = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=500${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`;
+      const url1 = `https://api.inaturalist.org/v1/observations/species_counts?${locationParam.substring(
+        1
+      )}&per_page=500${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`;
       const response1 = await fetch(url1);
       const data1 = await response1.json();
       results.push(...data1.results);
 
       // Second call: get next 500 species (page 2)
-      const url2 = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=500&page=2${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`;
+      const url2 = `https://api.inaturalist.org/v1/observations/species_counts?${locationParam.substring(
+        1
+      )}&per_page=500&page=2${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`;
       const response2 = await fetch(url2);
       const data2 = await response2.json();
       results.push(...data2.results);
@@ -292,7 +322,9 @@ document.addEventListener("DOMContentLoaded", function () {
       return results;
     } else {
       // Regular single API call for other limits
-      const url = `https://api.inaturalist.org/v1/observations/species_counts?place_id=${placeId}&per_page=${limit}${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`;
+      const url = `https://api.inaturalist.org/v1/observations/species_counts?${locationParam.substring(
+        1
+      )}&per_page=${limit}${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`;
       const response = await fetch(url);
       const data = await response.json();
 
