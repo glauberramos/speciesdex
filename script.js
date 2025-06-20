@@ -37,6 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const savedPlaceName = localStorage.getItem("inatPlaceName");
   const savedTaxon = localStorage.getItem("inatTaxonId");
   const savedLimit = localStorage.getItem("inatLimit");
+  const savedProject = localStorage.getItem("inatProject");
+  const savedProjectId = localStorage.getItem("inatProjectId");
 
   if (savedPlaceId) {
     placeIdInput.value = savedPlaceId;
@@ -44,6 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (savedPlaceName) {
     placeNameInput.value = savedPlaceName;
+  }
+
+  if (savedProject) {
+    placeNameInput.value = savedProject;
   }
 
   if (
