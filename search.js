@@ -125,55 +125,108 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   async function searchPlaces(query) {
-    await fetch(
-      `https://api.inaturalist.org/v1/search?q=${encodeURIComponent(
-        query
-      )}&sources=places&per_page=10`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result.results && result.results.length > 0) {
-          displayPlaceSuggestions(result.results);
-        } else {
-          placeAutocomplete.innerHTML =
-            '<div class="place-suggestion">No places found</div>';
-        }
-      });
+    try {
+      // Search for places
+      const placesResponse = await fetch(
+        `https://api.inaturalist.org/v1/search?q=${encodeURIComponent(
+          query
+        )}&sources=places&per_page=7`
+      );
+      const placesData = await placesResponse.json();
+
+      // Search for projects
+      const projectsResponse = await fetch(
+        `https://api.inaturalist.org/v1/projects?q=${encodeURIComponent(
+          query
+        )}&per_page=7`
+      );
+      const projectsData = await projectsResponse.json();
+
+      // Combine and display results
+      const places = placesData.results || [];
+      const projects = projectsData.results || [];
+
+      if (places.length === 0 && projects.length === 0) {
+        placeAutocomplete.innerHTML =
+          '<div class="place-suggestion">No places or projects found</div>';
+      } else {
+        displayCombinedResults(places, projects);
+      }
+    } catch (error) {
+      console.error("Error searching places and projects:", error);
+      placeAutocomplete.innerHTML =
+        '<div class="place-suggestion">Error searching places and projects</div>';
+    }
   }
 
-  function displayPlaceSuggestions(places) {
-    placeAutocomplete.innerHTML = places
-      .map((place) => {
-        return `
-      <div class="place-suggestion" data-id="${place.record.id}">
-          <div class="place-name">${
-            place.record.place_type === 12 || place.record.place_type === 29
-              ? place.record.name
-              : place.matches && place.matches.length > 0
-              ? place.matches.join(", ")
-              : place.record.name
-          }</div>
-      </div>
-  `;
-      })
-      .join("");
+  function displayCombinedResults(places, projects) {
+    let html = "";
 
+    // Add places section if there are places
+    if (places.length > 0) {
+      places.forEach((place) => {
+        html += `
+          <div class="place-suggestion" data-type="place" data-id="${
+            place.record.id
+          }">
+            <div class="place-name">${
+              place.record.place_type === 12 || place.record.place_type === 29
+                ? place.record.name
+                : place.matches && place.matches.length > 0
+                ? place.matches.join(", ")
+                : place.record.name
+            }</div>
+            <div class="place-type">Place</div>
+          </div>
+        `;
+      });
+    }
+
+    // Add projects section if there are projects
+    if (projects.length > 0) {
+      if (places.length > 0) {
+        html += '<div class="search-section-divider"></div>';
+      }
+      projects.forEach((project) => {
+        html += `
+          <div class="place-suggestion project-suggestion" data-type="project" data-id="${project.id}">
+            <div class="place-name">${project.title}</div>
+            <div class="place-type">Project</div>
+          </div>
+        `;
+      });
+    }
+
+    placeAutocomplete.innerHTML = html;
     placeAutocomplete.classList.add("active");
 
     // Add click handlers to suggestions
     const suggestions = placeAutocomplete.querySelectorAll(".place-suggestion");
     suggestions.forEach((suggestion) => {
       suggestion.addEventListener("click", () => {
-        const placeId = suggestion.dataset.id;
-        const placeName = suggestion.querySelector(".place-name").textContent;
+        const type = suggestion.dataset.type;
+        const id = suggestion.dataset.id;
+        const name = suggestion.querySelector(".place-name").textContent;
 
-        // Update input and save to localStorage
-        placeNameInput.value = placeName;
-        placeIdInput.value = placeId;
-        localStorage.setItem("inatPlaceId", placeId);
-        localStorage.setItem("inatPlaceName", placeName);
+        if (type === "place") {
+          // Handle place selection
+          placeNameInput.value = name;
+          placeIdInput.value = id;
+          localStorage.setItem("inatPlaceId", id);
+          localStorage.setItem("inatPlaceName", name);
+          // Clear any stored project data
+          localStorage.removeItem("inatProject");
+          localStorage.removeItem("inatProjectId");
+        } else if (type === "project") {
+          // Handle project selection
+          placeNameInput.value = name;
+          placeIdInput.value = ""; // Clear place ID
+          localStorage.removeItem("inatPlaceId");
+          localStorage.removeItem("inatPlaceName");
+          // Store project data
+          localStorage.setItem("inatProject", name);
+          localStorage.setItem("inatProjectId", id);
+        }
 
         // Hide autocomplete
         placeAutocomplete.classList.remove("active");
