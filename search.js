@@ -230,6 +230,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Hide autocomplete
         placeAutocomplete.classList.remove("active");
+
+        // Update location name
+        if (typeof updateLocationName === "function") {
+          console.log("Updating location name");
+          updateLocationName();
+        }
       });
     });
   }

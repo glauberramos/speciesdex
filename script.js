@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const verifiableCheckbox = document.getElementById("verifiableCheckbox");
   const languageSelect = document.getElementById("languageSelect");
   const downloadButton = document.getElementById("downloadButton");
+  const locationName = document.getElementById("locationName");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -72,6 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
     searchEspecies();
   }
 
+  updateLocationName();
+
   // Save username when it changes
   usernameInput.addEventListener("change", () => {
     const username = usernameInput.value.trim();
@@ -93,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.removeItem("inatProjectId");
       placeIdInput.value = "";
       placeNameInput.value = "";
+      updateLocationName();
     }
   });
 
@@ -210,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Display the species
       displaySpecies(topSpecies, userObservations);
+      updateLocationName();
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while fetching the data");
@@ -450,5 +455,18 @@ document.addEventListener("DOMContentLoaded", function () {
         card.style.display = "block";
       }
     });
+  }
+
+  function updateLocationName() {
+    const projectName = localStorage.getItem("inatProject");
+    const placeName = placeNameInput.value.trim();
+
+    if (projectName) {
+      locationName.textContent = projectName;
+    } else if (placeName) {
+      locationName.textContent = placeName;
+    } else {
+      locationName.textContent = "The whole world";
+    }
   }
 });
