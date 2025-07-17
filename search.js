@@ -230,6 +230,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Hide autocomplete
         placeAutocomplete.classList.remove("active");
+
+        // Update location name
+        if (typeof updateLocationName === "function") {
+          console.log("Updating location name");
+          updateLocationName();
+        }
       });
     });
   }
@@ -241,6 +247,17 @@ document.addEventListener("DOMContentLoaded", function () {
       !placeAutocomplete.contains(e.target)
     ) {
       placeAutocomplete.classList.remove("active");
+    }
+  });
+
+  // Clear place input on focusout if no value is selected
+  placeInput.addEventListener("focusout", (e) => {
+    const hasPlaceSelected =
+      localStorage.getItem("inatPlaceId") ||
+      localStorage.getItem("inatProjectId");
+
+    if (!hasPlaceSelected && placeInput.value.trim()) {
+      placeInput.value = "";
     }
   });
 

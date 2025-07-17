@@ -56,6 +56,7 @@
             <option value="200">Top 200 Species</option>
             <option value="500">Top 500 Species</option>
             <option value="1000">Top 1000 Species</option>
+            <option value="3000">Top 3000 Species</option>
           </select>
           <div class="username-search-container">
             <input
@@ -163,6 +164,7 @@
       <main>
         <div class="loading" id="loading">Loading...</div>
         <div class="checkbox-container">
+          <span id="locationName" class="location-name"></span>
           <input
             type="checkbox"
             id="showMissingOnly"
@@ -182,5 +184,10 @@
     <script src="script.js"></script>
     <script src="search.js"></script>
     <script src="download.js"></script>
+    <script
+      defer
+      data-domain="glauberramos.github.io/speciesdex"
+      src="https://plausible.io/js/script.js"
+    ></script>
   </body>
 </html>

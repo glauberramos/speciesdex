@@ -445,8 +445,11 @@ input[type="checkbox"] {
   transition: all 0.2s ease;
 }
 
-.checkbox-container {
-  display: none;
+.location-name {
+  font-weight: 500;
+  color: #2c3e50;
+  margin-right: 15px;
+  font-weight: 600;
 }
 
 .place-search-container {

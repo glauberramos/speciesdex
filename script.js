@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const verifiableCheckbox = document.getElementById("verifiableCheckbox");
   const languageSelect = document.getElementById("languageSelect");
   const downloadButton = document.getElementById("downloadButton");
+  const locationName = document.getElementById("locationName");
 
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
@@ -72,6 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
     searchEspecies();
   }
 
+  updateLocationName();
+
   // Save username when it changes
   usernameInput.addEventListener("change", () => {
     const username = usernameInput.value.trim();
@@ -93,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.removeItem("inatProjectId");
       placeIdInput.value = "";
       placeNameInput.value = "";
+      updateLocationName();
     }
   });
 
@@ -210,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Display the species
       displaySpecies(topSpecies, userObservations);
+      updateLocationName();
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while fetching the data");
@@ -307,8 +312,24 @@ document.addEventListener("DOMContentLoaded", function () {
       locationParam = `&place_id=${placeId}`;
     }
 
-    // Handle 1000 species by making two API calls
-    if (limit === "1000") {
+    if (limit === "3000") {
+      const getSpeciesCounts = (page = 1) =>
+        fetch(
+          `https://api.inaturalist.org/v1/observations/species_counts?${locationParam.substring(
+            1
+          )}&per_page=500&page=${page}${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`
+        )
+          .then((response) => response.json())
+          .then((data) => data.results);
+
+      const speciesCountsPromises = [];
+      for (let i = 1; i <= 6; i++) {
+        speciesCountsPromises.push(getSpeciesCounts(i));
+      }
+      const speciesCounts = await Promise.all([...speciesCountsPromises]);
+
+      return speciesCounts.flat();
+    } else if (limit === "1000") {
       const results = [];
 
       // First call: get first 500 species
@@ -450,5 +471,18 @@ document.addEventListener("DOMContentLoaded", function () {
         card.style.display = "block";
       }
     });
+  }
+
+  function updateLocationName() {
+    const projectName = localStorage.getItem("inatProject");
+    const placeName = placeNameInput.value.trim();
+
+    if (projectName) {
+      locationName.textContent = projectName;
+    } else if (placeName) {
+      locationName.textContent = placeName;
+    } else {
+      locationName.textContent = "The whole world";
+    }
   }
 });
