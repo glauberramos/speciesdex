@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
       locationParam = `&place_id=${placeId}`;
     }
 
-    if (limit === "3000") {
+    if (limit === "5000") {
       const getSpeciesCounts = (page = 1) =>
         fetch(
           `https://api.inaturalist.org/v1/observations/species_counts?${locationParam.substring(
@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((data) => data.results);
 
       const speciesCountsPromises = [];
-      for (let i = 1; i <= 6; i++) {
+      for (let i = 1; i <= 10; i++) {
         speciesCountsPromises.push(getSpeciesCounts(i));
       }
       const speciesCounts = await Promise.all([...speciesCountsPromises]);
