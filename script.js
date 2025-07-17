@@ -312,8 +312,24 @@ document.addEventListener("DOMContentLoaded", function () {
       locationParam = `&place_id=${placeId}`;
     }
 
-    // Handle 1000 species by making two API calls
-    if (limit === "1000") {
+    if (limit === "3000") {
+      const getSpeciesCounts = (page = 1) =>
+        fetch(
+          `https://api.inaturalist.org/v1/observations/species_counts?${locationParam.substring(
+            1
+          )}&per_page=500&page=${page}${taxonParam}${captiveParam}${researchGrade}${threatened}${verifiable}${languageParam}`
+        )
+          .then((response) => response.json())
+          .then((data) => data.results);
+
+      const speciesCountsPromises = [];
+      for (let i = 1; i <= 6; i++) {
+        speciesCountsPromises.push(getSpeciesCounts(i));
+      }
+      const speciesCounts = await Promise.all([...speciesCountsPromises]);
+
+      return speciesCounts.flat();
+    } else if (limit === "1000") {
       const results = [];
 
       // First call: get first 500 species

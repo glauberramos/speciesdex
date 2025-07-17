@@ -250,6 +250,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Clear place input on focusout if no value is selected
+  placeInput.addEventListener("focusout", (e) => {
+    const hasPlaceSelected =
+      localStorage.getItem("inatPlaceId") ||
+      localStorage.getItem("inatProjectId");
+
+    if (!hasPlaceSelected && placeInput.value.trim()) {
+      placeInput.value = "";
+    }
+  });
+
   // Taxon search functionality
   let taxonSearchTimeout;
 
