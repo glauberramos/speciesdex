@@ -1,4 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Language selection functionality
+  const languageSelect = document.getElementById("languageSelect");
+
+  // Load saved language from localStorage
+  const savedLanguage = localStorage.getItem("inatLanguage");
+  if (savedLanguage && languageSelect) {
+    languageSelect.value = savedLanguage;
+  }
+
+  // Save language to localStorage when changed
+  if (languageSelect) {
+    languageSelect.addEventListener("change", (e) => {
+      const selectedLanguage = e.target.value;
+      localStorage.setItem("inatLanguage", selectedLanguage);
+    });
+  }
+
   // Place search functionality
   const placeInput = document.getElementById("placeNameInput");
   const placeAutocomplete = document.getElementById("placeAutocomplete");
