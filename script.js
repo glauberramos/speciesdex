@@ -32,6 +32,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const downloadButton = document.getElementById("downloadButton");
   const locationName = document.getElementById("locationName");
 
+  // URL parameter utilities
+  function getUrlParameter(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  function setUrlParameter(param, value) {
+    const url = new URL(window.location);
+    if (value) {
+      url.searchParams.set(param, value);
+    } else {
+      url.searchParams.delete(param);
+    }
+    window.history.replaceState({}, '', url);
+  }
+
   // Load saved username, place ID, taxon, and limit preference from localStorage
   const savedUsername = localStorage.getItem("inatUsername");
   const savedPlaceId = localStorage.getItem("inatPlaceId");
@@ -40,6 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const savedLimit = localStorage.getItem("inatLimit");
   const savedProject = localStorage.getItem("inatProject");
   const savedProjectId = localStorage.getItem("inatProjectId");
+
+  // Check URL parameters first, then fall back to localStorage
+  const urlUsername = getUrlParameter("user_login");
+  const finalUsername = urlUsername || savedUsername;
 
   if (savedPlaceId) {
     placeIdInput.value = savedPlaceId;
@@ -68,8 +88,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  if (savedUsername) {
-    usernameInput.value = savedUsername;
+  if (finalUsername) {
+    usernameInput.value = finalUsername;
+    // If username came from URL, also save it to localStorage
+    if (urlUsername) {
+      localStorage.setItem("inatUsername", urlUsername);
+    }
     searchEspecies();
   }
 
@@ -80,8 +104,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const username = usernameInput.value.trim();
     if (username) {
       localStorage.setItem("inatUsername", username);
+      setUrlParameter("user_login", username);
     } else {
       localStorage.removeItem("inatUsername");
+      setUrlParameter("user_login", null);
     }
   });
 

@@ -104,6 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
         usernameInput.value = usernameName;
         localStorage.setItem("inatUsername", usernameName);
 
+        // Update URL parameter
+        const url = new URL(window.location);
+        url.searchParams.set("user_login", usernameName);
+        window.history.replaceState({}, '', url);
+
         // Hide autocomplete
         usernameAutocomplete.classList.remove("active");
       });
