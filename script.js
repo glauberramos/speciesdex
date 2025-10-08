@@ -61,6 +61,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const urlUsername = getUrlParameter("user_login");
   const finalUsername = urlUsername || savedUsername;
 
+  const urlTaxonId = getUrlParameter("taxon_id");
+  const finalTaxonId = urlTaxonId || savedTaxon;
+
   if (savedPlaceId) {
     placeIdInput.value = savedPlaceId;
   }
@@ -74,11 +77,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (
-    savedTaxon &&
-    [...taxonSelect.options].map((option) => option.value).indexOf(savedTaxon) >
+    finalTaxonId &&
+    [...taxonSelect.options].map((option) => option.value).indexOf(finalTaxonId) >
       -1
   ) {
-    taxonSelect.value = savedTaxon;
+    taxonSelect.value = finalTaxonId;
+    // If taxon came from URL, also save it to localStorage
+    if (urlTaxonId) {
+      localStorage.setItem("inatTaxonId", urlTaxonId);
+    }
+  } else if (finalTaxonId && taxonIdOverrideInput) {
+    // If taxon ID is not in the dropdown but we have an override input, set it there
+    // This handles custom taxon IDs from URL that aren't in the predefined list
+    if (urlTaxonId) {
+      localStorage.setItem("inatTaxonId", urlTaxonId);
+      // We'll set the input value to the taxon ID for now
+      // The search autocomplete will handle converting it to a name
+      taxonIdOverrideInput.value = urlTaxonId;
+    }
   }
 
   if (savedLimit) {
@@ -132,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (taxonName == "") {
       localStorage.removeItem("inatTaxonId");
+      setUrlParameter("taxon_id", null);
       taxonIdOverrideInput.value = "";
     }
   });
@@ -140,6 +157,13 @@ document.addEventListener("DOMContentLoaded", function () {
   taxonSelect.addEventListener("change", (selected) => {
     // Save the selected taxon to localStorage
     localStorage.setItem("inatTaxonId", taxonSelect.value);
+
+    // Update URL parameter
+    if (taxonSelect.value === "all") {
+      setUrlParameter("taxon_id", null);
+    } else {
+      setUrlParameter("taxon_id", taxonSelect.value);
+    }
 
     // Populate the taxonIdOverrideInput with the selected value, or clear if 'all'
     if (taxonIdOverrideInput) {

@@ -358,6 +358,11 @@ document.addEventListener("DOMContentLoaded", function () {
         taxonIdOverrideInput.value = taxonName;
         localStorage.setItem("inatTaxonId", taxonId);
 
+        // Update URL parameter
+        const url = new URL(window.location);
+        url.searchParams.set("taxon_id", taxonId);
+        window.history.replaceState({}, '', url);
+
         // Hide autocomplete
         taxonAutocomplete.classList.remove("active");
       });
