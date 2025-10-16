@@ -412,7 +412,15 @@ document.addEventListener("DOMContentLoaded", function () {
     card.className = `species-card ${isObserved ? "observed" : ""}`;
 
     // Create the iNaturalist URL for this species in the current place
-    const inatUrl = `https://www.inaturalist.org/observations?place_id=${placeIdInput.value}&taxon_id=${specimen.taxon.id}`;
+    // Get selected months to include in URL
+    const monthCheckboxes = document.querySelectorAll(
+      ".month-checkbox:checked"
+    );
+    const selectedMonths = Array.from(monthCheckboxes).map((cb) => cb.value);
+    const monthParam =
+      selectedMonths.length > 0 ? `&month=${selectedMonths.join(",")}` : "";
+
+    const inatUrl = `https://www.inaturalist.org/observations?place_id=${placeIdInput.value}&taxon_id=${specimen.taxon.id}${monthParam}`;
 
     // Create status labels container
     const statusContainer = document.createElement("div");
